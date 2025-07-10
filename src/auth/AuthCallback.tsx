@@ -4,7 +4,8 @@ const AuthCallback = () => {
   return (
     <div>
       AuthCallback
-AuthCallback
+      AuthCallback
+    
     </div>
   )
 }

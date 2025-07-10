@@ -17,13 +17,14 @@ import {
 } from "lucide-react"
 import { Button } from './ui/button'
 import { ThemeToggle } from './theme-toggle'
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
 const Navbar = () => {
   return (
      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="pl-5 flex items-center gap-16">
             <Link to="/" className="flex items-center gap-2">
-              <span className="text-2xl font-bold">GameVault</span>
+              <span className="text-2xl font-bold">Game Grab</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
               <Link to="/games" className="text-sm font-medium hover:text-primary transition-colors">
@@ -44,13 +45,12 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-2">
               <div className="relative">
-                {/* <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search games..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-64"
-                /> */}
+                    <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
               </div>
             </div>
                   {/* <ThemeToggle /> */}

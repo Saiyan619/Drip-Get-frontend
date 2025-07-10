@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowRight, Heart, ShoppingCart, Star } from 'lucide-react'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const featuredGames = [
   {
@@ -61,7 +62,9 @@ const FeaturedGames = () => {
               <p className="text-muted-foreground">Handpicked games just for you</p>
             </div>
             <Button variant="outline">
-              View All Games
+            <Link to="/search">
+                            View All Products
+            </Link>
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
