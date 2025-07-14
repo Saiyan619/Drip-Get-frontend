@@ -60,5 +60,5 @@ export const useGetUser = () => {
 }
 
     const { data: currentUser, isPending, error } = useQuery({ queryKey: ["fetchCurrentUser"], queryFn: getUserDetails })
-    return {currentUser}
+  return { currentUser, isPending };
 }

@@ -1,15 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Product } from '@/types';
+import { useAddToCart } from '@/apiServices/CartServices';
 
-interface ProductCardProps {
+type ProductCardProps = {
   product: Product;
-  onAddToCart?: (product: Product) => void;
-}
+};
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
+export const ProductCard = ({ product }: ProductCardProps) => {
+  const { addToCart } = useAddToCart();
+
+  // Temporary defaults (replace with actual UI selections)
+  const [selectedSize] = useState(product.variants[0]?.size || '');
+  const [selectedColor] = useState(product.variants[0]?.color || '');
+  const [quantity] = useState(1);
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({
+        productId: product._id,
+        size: selectedSize,
+        color: selectedColor,
+        quantity,
+      });
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+    }
+  };
+
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardContent className="p-0">
@@ -56,7 +76,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
               </Badge>
             )}
           </div>
-          <Button className="w-full" onClick={() => onAddToCart?.(product)}>
+          <Button onClick={handleAddToCart} className="w-full">
             Add to Cart
           </Button>
         </div>

@@ -9,7 +9,7 @@ import { FilterParams } from '@/types';
 interface ProductFiltersProps {
   filters: FilterParams;
   searchInput: string;
-  categories: string[];
+  categories: string;
   hasActiveFilters: boolean;
   onSearchChange: (value: string) => void;
   onFilterChange: (key: keyof FilterParams, value: any) => void;
@@ -55,7 +55,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
         {/* Category Filter */}
         <div>
           <label className="text-sm font-medium mb-2 block">Category</label>
-          <Select 
+          {/* <Select 
             value={filters.category || ''} 
             onValueChange={(value) => onFilterChange('category', value)}
           >
@@ -68,7 +68,8 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                 <SelectItem key={category} value={category}>{category}</SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
+        <p>{categories}</p>
         </div>
 
         {/* Price Range */}

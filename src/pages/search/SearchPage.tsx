@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Filter, Grid, List } from 'lucide-react';
 import { useFilters } from '@/hooks/UseFilter';
-import { useProducts } from '@/apiServices/ProductApi';
+import { useGetProducts } from '@/apiServices/ProductApi';
 import { ProductFilters } from './components/ProductFilters';
 import { ActiveFilters } from './components/ActiveFilter';
 import { ProductSkeleton } from './components/ProductSkeleton';
@@ -12,6 +12,7 @@ import { Pagination } from './components/Pagination';
 
 
 const SearchPage = () => {
+  
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   
@@ -24,7 +25,7 @@ const SearchPage = () => {
     hasActiveFilters
   } = useFilters();
 
-  const { data: productsData, isPending, error } = useProducts(filters);
+  const { data: productsData, isPending, error } = useGetProducts(filters);
 
   // Get unique categories from the products for filter dropdown
   const categories = useMemo(() => {
@@ -75,13 +76,14 @@ const SearchPage = () => {
             variant="outline"
             size="sm"
             onClick={() => setShowFilters(!showFilters)}
-            className="sm:hidden"
+            className=""
           >
             <Filter className="h-4 w-4 mr-2" />
             Filters
           </Button>
         </div>
       </div>
+      
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Filters Sidebar */}
@@ -89,7 +91,7 @@ const SearchPage = () => {
           <ProductFilters
             filters={filters}
             searchInput={searchInput}
-            categories={categories}
+            categories={categories[0] || ''}
             hasActiveFilters={hasActiveFilters}
             onSearchChange={setSearchInput}
             onFilterChange={updateFilter}
@@ -128,7 +130,6 @@ const SearchPage = () => {
               <ProductGrid
                 products={productsData.products}
                 viewMode={viewMode}
-                onAddToCart={handleAddToCart}
               />
 
               {/* Pagination */}

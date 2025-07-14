@@ -42,7 +42,7 @@ const Home = () => {
       {/* Home
       Home 
       <Button onClick={createMyUser}>register</Button> */}
-      {/* <Button onClick={tokenFunc}>register</Button>  */}
+      <Button onClick={tokenFunc}>register</Button> 
       <Header />
       <FeaturedGames />
       <GameCategories />

@@ -37,3 +37,33 @@ export interface FilterParams {
   sortBy?: string;
   order?: 'asc' | 'desc';
 }
+
+// export interface Variant {
+//   size: string;
+//   color: string;
+//   inventory: number;
+//   sku: string;
+// }
+
+export interface CartItemInput {
+  productId: string;
+  size: string;
+  color: string;
+  quantity: number;
+}
+
+export interface CartItem {
+  productId: Product; // populated version
+  size: string;
+  color: string;
+  quantity: number;
+}
+
+export interface Cart {
+  _id: string;
+  userId: string;
+  items: CartItem[];
+  createdAt: string;
+  __v: number;
+}
+
