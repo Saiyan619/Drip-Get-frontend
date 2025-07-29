@@ -55,10 +55,12 @@ const Navbar = () => {
             </div>
                   {/* <ThemeToggle /> */}
                             <ThemeToggle />
-
-            <Button variant="ghost" size="icon">
+          <Link to="/userProfile">
+          <Button variant="ghost" size="icon">
               <User className="h-5 w-5" />
             </Button>
+          </Link>
+            
           <Link to="/cart">
            <Button variant="ghost" size="icon" className="relative">
               <ShoppingCart className="h-5 w-5" />

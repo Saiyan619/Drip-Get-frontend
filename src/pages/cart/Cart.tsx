@@ -6,40 +6,44 @@ import { Clock, Heart, Minus, Plus, Trash2, Truck } from 'lucide-react';
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { number } from 'yargs';
+import UpdateCartDialog from './components/UpdateCartDialog';
+import CartSummary from './components/CartSummary';
 
 const Cart = () => {
-  const { data: cart } = useGetCart();
-  const { deleteCart} = useDeleteCart();
+ const { data: cart, refetch } = useGetCart();
+  const { deleteCart } = useDeleteCart();
+  // const myCart = cart as CartType;
         const myCart = cart
 
     const test = () => {
-      console.log(myCart);
+      console.log(myCart?.items);
   }
   const handleRemove = async (itemId: string | undefined) => {
   try {
     await deleteCart(itemId);
+    // Refetch cart data after successful deletion
+      refetch();
   } catch (err) {
     console.error(err);
   }
 };
- const [quantity, setQuantity] = useState(1);
+//  const [quantity, setQuantity] = useState(1);
 
-  const updateDecreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(prev => prev - 1);
-      // TODO: call backend to update cart
-    }
-  };
+//   const updateDecreaseQuantity = () => {
+//     if (quantity > 1) {
+//       setQuantity(prev => prev - 1);
+//       // TODO: call backend to update cart
+//     }
+//   };
 
-  const updateIncreaseQuantity = () => {
-    setQuantity(prev => prev + 1);
-    // TODO: call backend to update cart
-  };
+//   const updateIncreaseQuantity = () => {
+//     setQuantity(prev => prev + 1);
+//     // TODO: call backend to update cart
+//   };
   return (
     <div>
-      Cart
-          Cart
-          <button onClick={test}>Get cart</button>
+
+      <Button onClick={test}>Get cart</Button>
 
             <div className="space-y-4">
               {myCart?.items.map((item) => {
@@ -96,19 +100,20 @@ const Cart = () => {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 bg-transparent"
-                            onClick={updateDecreaseQuantity}
+                            // onClick={updateDecreaseQuantity}
                   >
                     <Minus className="h-3 w-3" />
                   </Button>
+
                           {/* <span className="w-8 text-center">{item.quantity}</span> */}
                           {/* dummy quantity */}
-           <span className="w-8 text-center">{quantity}</span>
+           <span className="w-8 text-center">{item.quantity}</span>
 
                   <Button
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 bg-transparent"
-                            onClick={updateIncreaseQuantity}
+                            // onClick={updateIncreaseQuantity}
                           >
                             <Plus className="h-3 w-3" />
                           </Button>
@@ -124,6 +129,9 @@ const Cart = () => {
                             <Heart className="h-4 w-4 mr-1" />
                             Save for Later
                           </Button>
+                                <UpdateCartDialog cartItem={item} onUpdate={refetch} />
+
+
                           <Button
                             variant="ghost"
                             size="sm"
@@ -144,6 +152,7 @@ onClick={() => handleRemove(item._id)} // ✅ Correct
      {/* <Button onClick={() => handleRemove("68736775de0f9a34632a1f89")} // ✅ Correct */}
 {/* >Remove All</Button> */}
 
+      <CartSummary cartItems={myCart?.items ?? []} />
     </div>
   )
 }

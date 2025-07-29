@@ -1,4 +1,15 @@
-// types/product.ts
+export interface UserInput{
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+}
+
 export interface Variant {
   _id: string;
   size: string;
@@ -46,6 +57,7 @@ export interface FilterParams {
 // }
 
 export interface CartItemInput {
+  _id: string;
   productId: string;
   size: string;
   color: string;
@@ -53,6 +65,7 @@ export interface CartItemInput {
 }
 
 export interface CartItem {
+    _id: string;
   productId: Product; // populated version
   size: string;
   color: string;
@@ -67,3 +80,47 @@ export interface Cart {
   __v: number;
 }
 
+
+export interface ShippingAddress {
+  firstName: string;
+  lastName: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  phone: string;
+}
+
+export interface CreateOrderRequest {
+  shippingAddress: ShippingAddress;
+  checkoutSessionId?: string; 
+}
+
+// For the order response from my backend
+export interface OrderItem {
+  productId: string;
+  productName: string;
+  size: string;
+  color: string;
+  quantity: number;
+  price: number;
+}
+
+export interface Order {
+  _id: string;
+  orderNumber: string;
+  customerId: string;
+  status: 'pending' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  items: OrderItem[];
+  total: number;
+  shippingAddress: ShippingAddress;
+  stripePaymentId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateOrderResponse {
+  message: string;
+  order: Order;
+}

@@ -1,6 +1,6 @@
 import { Cart, CartItem, CartItemInput } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useAddToCart = () => {
@@ -52,16 +52,66 @@ export const useGetCart = () => {
             
         }
         const data = await response.json();
-    console.log("Cart data:", data); // Now properly logs the data
+    // console.log("Cart data:", data); // Now properly logs the data
     return data;
     }
 
-    const {data, isPending, error} = useQuery({
+    const {data, isPending, error, refetch} = useQuery({
     queryKey: ["getCart"],
     queryFn: getCart,
   });
-    return { data };
+    return { data, refetch };
 }
+
+
+export const useUpdateCartItem = () => {
+  const { getToken } = useAuth();
+  const queryClient = useQueryClient();
+  
+  const updateCartItem = async (cartParam: CartItemInput) => {
+    const token = await getToken();
+
+    const response = await fetch(`${API_BASE_URL}/api/cart/add/${cartParam._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        size: cartParam.size,
+        color: cartParam.color,
+        quantity: cartParam.quantity,
+      }),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to update cart item");
+    }
+    
+    const data = await response.json();
+    console.log(data)
+    return data;
+  };
+
+  const {
+    mutateAsync: updateSingleCart,
+    isPending,
+    isError,
+    isSuccess,
+  } = useMutation({ 
+    mutationFn: updateCartItem,
+    onSuccess: () => {
+      // Invalidate cart queries to refetch fresh data
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
+    }
+  });
+
+  return { updateSingleCart, isPending, isError, isSuccess };
+};
+
+
+
 
 export const useDeleteCart = () => {
                   const { getToken } = useAuth();

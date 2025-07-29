@@ -100,7 +100,22 @@ export default function ProductDetails() {
   
   // Check if current selection is in stock
   const isInStock = currentVariant ? currentVariant.inventory > 0 : false
-  
+  // console.log(currentVariant)
+  const mappedVar = product.variants?.map((item) => {
+    return (
+      item.size
+    )
+  })
+  // console.log(product.variants)
+  // console.log(currentVariant)
+  const cartReq = {
+    // selectedImage,
+    selectedSize,
+    selectedColor,
+    quantity
+  };
+  console.log(cartReq)
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -203,8 +218,7 @@ export default function ProductDetails() {
             </div>
           )}
 
-          {/* Color Selection - only show if multiple colors available */}
-          {colors.length > 1 && (
+          {colors.length >= 1 && (
             <div>
               <Label className="text-base font-medium mb-3 block">Color</Label>
               <RadioGroup value={selectedColor} onValueChange={setSelectedColor}>

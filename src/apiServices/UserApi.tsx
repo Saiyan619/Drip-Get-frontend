@@ -1,3 +1,4 @@
+import { UserInput } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -61,4 +62,28 @@ export const useGetUser = () => {
 
     const { data: currentUser, isPending, error } = useQuery({ queryKey: ["fetchCurrentUser"], queryFn: getUserDetails })
   return { currentUser, isPending };
+}
+
+export const useUpdateUser = () => {
+  const { getToken } = useAuth();
+  const updateUser = async (userData:UserInput) => {
+    const token = await getToken();
+    const response = await fetch(`${API_BASE_URL}/api/auth/profile/update`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body:JSON.stringify(userData)
+    })
+    if (!response.ok) {
+      throw new Error("Failed to update user");
+    }
+    const data = await response.json();
+    console.log("update complete",data)
+    return data
+
+  }
+  return {updateUser}
+  
 }
