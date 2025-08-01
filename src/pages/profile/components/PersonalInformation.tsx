@@ -6,45 +6,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { UserInput } from "@/types"
 
-// firstName
-// lastName
-// street
-// state
-// zipCode
-// country
 type PersonalInformationProps = {
     isEditing: boolean;
     setIsEditing: (isEditing:boolean) => void;
     handleSave: () => void;
-    profileData: {
-        firstName: string;
-        lastName: string;
-        email: string;
-        phone: string;
-        street: string;
-        city: string;
-        state: string;
-        zipCode: string;
-        country: string;
-    };
-    setProfileData: (data: {
-        firstName: string; lastName: string; email: string; phone: string; street: string; city: string; state: string; zipCode: string; country: string;
-    }) => void;
-    updateUser: (userData: {
-        firstName: string;
-        lastName: string;
-        email: string;
-        phone: string;
-        street: string;
-        city: string;
-        state: string;
-        zipCode: string;
-        country: string;
-    }) => Promise<void>;
+    profileData: UserInput;
+    setProfileData: (data:UserInput) => void;
   }
 
-const PersonalInformation = ({ isEditing, handleSave, setIsEditing, profileData, setProfileData, updateUser } : PersonalInformationProps) => {
+const PersonalInformation = ({ isEditing, handleSave, setIsEditing, profileData, setProfileData } : PersonalInformationProps) => {
+ 
   return (
     <Card>
               <CardHeader className="flex flex-row items-center justify-between">
@@ -87,7 +60,7 @@ const PersonalInformation = ({ isEditing, handleSave, setIsEditing, profileData,
 
                       value={profileData.email}
                       onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                      disabled={!isEditing}
+                      disabled
                     />
                   </div>
                   <div className="w-full">
@@ -103,8 +76,8 @@ const PersonalInformation = ({ isEditing, handleSave, setIsEditing, profileData,
                     <Label htmlFor="country">Country</Label>
                     <Input
                       id="country"
-                      value={profileData.country}
-                      onChange={(e) => setProfileData({ ...profileData, country: e.target.value })}
+                      value={profileData.address.country}
+                      onChange={(e) => setProfileData({ ...profileData, address:{...profileData.address, country: e.target.value}  })}
                       disabled={!isEditing}
                     />
                   </div>
@@ -123,8 +96,8 @@ const PersonalInformation = ({ isEditing, handleSave, setIsEditing, profileData,
                     <Label htmlFor="street">Street</Label>
                     <Input
                       id="street"
-                      value={profileData.street}
-                      onChange={(e) => setProfileData({ ...profileData, street: e.target.value })}
+                      value={profileData.address.street}
+                      onChange={(e) => setProfileData({ ...profileData, address:{...profileData.address, street: e.target.value}  })}
                       disabled={!isEditing}
                     />
                   </div>
@@ -132,8 +105,8 @@ const PersonalInformation = ({ isEditing, handleSave, setIsEditing, profileData,
                     <Label htmlFor="zipCode">ZipCode</Label>
                     <Input
                       id="zipCode"
-                      value={profileData.zipCode}
-                      onChange={(e) => setProfileData({ ...profileData, zipCode: e.target.value })}
+                    value={profileData.address.zipCode}
+                      onChange={(e) => setProfileData({ ...profileData, address:{...profileData.address, zipCode: e.target.value}  })}
                       disabled={!isEditing}
                     />
                   </div>
@@ -143,8 +116,8 @@ const PersonalInformation = ({ isEditing, handleSave, setIsEditing, profileData,
                     <Label htmlFor="city">City</Label>
                     <Input
                       id="city"
-                      value={profileData.city}
-                      onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
+                       value={profileData.address.city}
+                      onChange={(e) => setProfileData({ ...profileData, address:{...profileData.address, city: e.target.value}  })}
                       disabled={!isEditing}
                     />
                   </div>
@@ -152,8 +125,8 @@ const PersonalInformation = ({ isEditing, handleSave, setIsEditing, profileData,
                     <Label htmlFor="state">State</Label>
                     <Input
                       id="state"
-                      value={profileData.state}
-                      onChange={(e) => setProfileData({ ...profileData, state: e.target.value })}
+                       value={profileData.address.state}
+                      onChange={(e) => setProfileData({ ...profileData, address:{...profileData.address, state: e.target.value}  })}
                       disabled={!isEditing}
                     />
                   </div>

@@ -6,27 +6,68 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useCreateOrder } from "@/apiServices/orderServices"
+import PlacingOrder from "./components/PlacingOrder"
+import ShippingMethod from "./components/ShippingMethod"
+import { useGetUser } from "@/apiServices/UserApi"
+import { useUser } from "@clerk/clerk-react"
 
 export default function CreateOrder() {
-  const [step, setStep] = useState(1)
+  const { createNewOrder } = useCreateOrder();
+  const { currentUser } = useGetUser();
+  const { user } = useUser();
   const [formData, setFormData] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    country: "United States",
-    phone: "",
-    shippingMethod: "standard",
+    // email: user?.primaryEmailAddress, // Assuming user has emailAddresses
+  firstName: "",
+  lastName: "",
+  street: "", // Changed from `street`
+  city: "",
+  state: "",
+  zipCode: "",
+  country: "Nigeria",
+  phone: "",
+  
+  })
+
+  const useAddress = () => {
+    setFormData({
+      ...formData,
+      firstName: currentUser?.firstName || "",
+      lastName: currentUser?.lastName || "",
+      street: currentUser?.address.street || "",
+      city: currentUser?.address.city || "",
+      state: currentUser?.address.state || "",
+      zipCode: currentUser?.address.zipCode || "",
+      country: currentUser?.address.country || "",
+      phone: currentUser?.phone || "",
+    })
+  }
+
+  const shippingAddress = {
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    street: formData.street,
+    city: formData.city,
+    state: formData.state,
+    zipCode: formData.zipCode,
+    country: formData.country,
+    phone: formData.phone,
+  }
+
+  const orderData = {
+    shippingAddress,
+  }
+ 
+
+  const shippingSummary = {
+      shippingMethod: "standard",
     paymentMethod: "card",
     cardNumber: "",
     expiryDate: "",
     cvv: "",
     nameOnCard: "",
-  })
+  }
 
   const orderSummary = {
     subtotal: 1548,
@@ -35,14 +76,40 @@ export default function CreateOrder() {
     total: 1671.84,
   }
 
+  type orderSummaryType = {
+    subtotal: number;
+    shipping: number;
+    tax: number;
+    total: number;
+}
+
+
+  // const getUser = () => {
+  //   console.log(currentUser)
+  // }
+
+
+  const navigate = useNavigate();
+   const handlePlacingOrder = () => {
+      createNewOrder(orderData)
+        .then((data) => {  // The data returned from your API
+      console.log("Order data:", data) // This is your API response
+      
+      // Now you can access the order ID or any other data from the response
+      
+      navigate(`verify-order/${data.orderId}`)
+        })
+        .catch((error) => {
+          console.error("Error placing order:", error)
+          alert("Failed to place order. Please try again.")
+        })
+    }
+  
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = () => {
-    // Handle order submission
-    alert("Order placed successfully!")
-  }
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -68,8 +135,8 @@ export default function CreateOrder() {
                   <Input
                     id="email"
                     type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    value={user?.primaryEmailAddress?.emailAddress}
+                    disabled
                     placeholder="your@email.com"
                   />
                 </div>
@@ -77,6 +144,7 @@ export default function CreateOrder() {
             </Card>
 
 <Card>
+  
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <span className="bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
@@ -90,13 +158,13 @@ export default function CreateOrder() {
                     <div>
                       <Label htmlFor="firstName">First Name *</Label>
                       <Input
-                        id="firstName"
                         value={formData.firstName}
                         onChange={(e) => handleInputChange("firstName", e.target.value)}
                         required
                         className="h-12"
                       />
                     </div>
+                    
                     <div>
                       <Label htmlFor="lastName">Last Name *</Label>
                       <Input
@@ -111,9 +179,9 @@ export default function CreateOrder() {
                   <div>
                     <Label htmlFor="address">Address *</Label>
                     <Input
-                      id="address"
-                      value={formData.address}
-                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      id="street"
+                      value={formData.street}
+                      onChange={(e) => handleInputChange("street", e.target.value)}
                       placeholder="123 Main Street"
                       required
                       className="h-12"
@@ -162,106 +230,17 @@ export default function CreateOrder() {
                         className="h-12"
                       />
                     </div>
-                  </div>
+                </div>
+                <Button onClick={useAddress}>Use your Address</Button>
                 </CardContent>
               </Card>
 
-              {/* Shipping Method */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <span className="bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
-                      3
-                    </span>
-                    Shipping Method
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <RadioGroup
-                    value={formData.shippingMethod}
-                    onValueChange={(value) => handleInputChange("shippingMethod", value)}
-                  >
-                    <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                      <RadioGroupItem value="standard" id="standard" />
-                      <div className="flex-1">
-                        <Label htmlFor="standard" className="font-medium cursor-pointer">
-                          Standard Shipping
-                        </Label>
-                        <p className="text-sm text-gray-600">5-7 business days • Free</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                      <RadioGroupItem value="express" id="express" />
-                      <div className="flex-1">
-                        <Label htmlFor="express" className="font-medium cursor-pointer">
-                          Express Shipping
-                        </Label>
-                        <p className="text-sm text-gray-600">2-3 business days • $15</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                      <RadioGroupItem value="overnight" id="overnight" />
-                      <div className="flex-1">
-                        <Label htmlFor="overnight" className="font-medium cursor-pointer">
-                          Overnight Shipping
-                        </Label>
-                        <p className="text-sm text-gray-600">Next business day • $35</p>
-                      </div>
-                    </div>
-                  </RadioGroup>
-                </CardContent>
-              </Card>
+            <ShippingMethod  />
 
-            
-          {/* Order Summary */}
-          <div className="lg:sticky lg:top-8 lg:h-fit">
-            <Card>
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>${orderSummary.subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span>{orderSummary.shipping === 0 ? "Free" : `$${orderSummary.shipping.toFixed(2)}`}</span>
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <span>Tax</span>
-                    <span>${orderSummary.tax.toFixed(2)}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between font-semibold text-lg">
-                    <span>Total</span>
-                    <span>${orderSummary.total.toFixed(2)}</span>
-                  </div>
-                </div>
+          
 
-                  <Link to="/verify-order">
-                      <Button className="w-full" size="lg" onClick={handleSubmit}>
-                  <CreditCard className="mr-2 h-5 w-5" />
-                  Place Order
-                </Button>
-
-                  </Link>
-              
-                <div className="space-y-3 pt-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Shield className="h-4 w-4" />
-                    <span>Secure checkout with SSL encryption</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Truck className="h-4 w-4" />
-                    <span>Free returns within 30 days</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+            <PlacingOrder handlePlacingOrder={handlePlacingOrder} orderSummary={orderSummary} />
+       
         </div>
       </div>
     </div>

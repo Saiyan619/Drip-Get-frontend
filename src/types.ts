@@ -3,11 +3,14 @@ export interface UserInput{
   lastName: string;
   email: string;
   phone: string;
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
+  address: UserAddress;
+}
+export interface UserAddress{
+  street: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
 }
 
 export interface Variant {
@@ -80,7 +83,6 @@ export interface Cart {
   __v: number;
 }
 
-
 export interface ShippingAddress {
   firstName: string;
   lastName: string;
@@ -92,12 +94,18 @@ export interface ShippingAddress {
   phone: string;
 }
 
-export interface CreateOrderRequest {
+// Payload from frontend when creating an order
+export interface OrderDataInput {
   shippingAddress: ShippingAddress;
-  checkoutSessionId?: string; 
 }
 
-// For the order response from my backend
+// Extended payload if you're sending a Stripe session ID from frontend
+export interface CreateOrderRequest {
+  shippingAddress: ShippingAddress;
+  checkoutSessionId?: string;
+}
+
+// One item inside an order
 export interface OrderItem {
   productId: string;
   productName: string;
@@ -107,6 +115,7 @@ export interface OrderItem {
   price: number;
 }
 
+// Full order object returned from backend
 export interface Order {
   _id: string;
   orderNumber: string;
@@ -115,12 +124,38 @@ export interface Order {
   items: OrderItem[];
   total: number;
   shippingAddress: ShippingAddress;
-  stripePaymentId?: string;
+  stripePaymentId: string | null; // nullable
   createdAt: string;
   updatedAt: string;
 }
 
+// Response from backend when an order is created
 export interface CreateOrderResponse {
   message: string;
   order: Order;
+}
+
+
+export interface OrderData {
+  // Contact Information
+  email: string
+
+  // Shipping Address
+  firstName: string
+  lastName: string
+  address: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+  phone: string
+
+  // Shipping Method
+  shippingMethod: string
+
+  // Payment Method
+  paymentMethod: string
+  cardNumber: string
+  expiryDate: string
+  nameOnCard: string
 }

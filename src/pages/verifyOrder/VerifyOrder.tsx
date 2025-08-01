@@ -1,140 +1,29 @@
-
 import { useState } from "react"
-import Image from "next/image"
 import { ArrowLeft, Edit, CreditCard, Truck, MapPin, User, Package } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-
-interface OrderData {
-  // Contact Information
-  email: string
-
-  // Shipping Address
-  firstName: string
-  lastName: string
-  address: string
-  city: string
-  state: string
-  zipCode: string
-  country: string
-  phone: string
-
-  // Shipping Method
-  shippingMethod: string
-
-  // Payment Method
-  paymentMethod: string
-  cardNumber: string
-  expiryDate: string
-  nameOnCard: string
-}
-
-interface CartItem {
-  id: string
-  name: string
-  price: number
-  originalPrice?: number
-  image: string
-  brand: string
-  size: string
-  color: string
-  quantity: number
-}
+import { useParams } from "react-router-dom"
+import { useGetOrderById } from "@/apiServices/orderServices"
+import { useUser } from "@clerk/clerk-react"
+import { CheckoutPage } from "../checkout/Checkout"
+import ShippingMethod from "./component/ShippingMethod"
 
 export default function VerifyOrder() {
-  const [isProcessing, setIsProcessing] = useState(false)
+  const { user } = useUser();
+  const { id } = useParams<{ id: string }>();
+  if (!id) return <div>Invalid Order ID</div>;
+  const { singleOrder } = useGetOrderById(id);
+  console.log(singleOrder)
 
-  // In a real app, this would come from your state management or API
-  const [orderData] = useState<OrderData>({
-    email: "sarah.johnson@email.com",
-    firstName: "Sarah",
-    lastName: "Johnson",
-    address: "123 Fashion Ave",
-    city: "New York",
-    state: "NY",
-    zipCode: "10001",
-    country: "United States",
-    phone: "+1 (555) 123-4567",
-    shippingMethod: "standard",
-    paymentMethod: "card",
-    cardNumber: "•••• •••• •••• 4242",
-    expiryDate: "12/25",
-    nameOnCard: "Sarah Johnson",
-  })
-
-  const [cartItems] = useState<CartItem[]>([
-    {
-      id: "1",
-      name: "Luxury Cashmere Coat",
-      price: 899,
-      originalPrice: 1299,
-      image: "/placeholder.svg?height=200&width=200&text=Cashmere+Coat",
-      brand: "Maison Luxe",
-      size: "M",
-      color: "Black",
-      quantity: 1,
-    },
-    {
-      id: "2",
-      name: "Designer Leather Handbag",
-      price: 649,
-      image: "/placeholder.svg?height=200&width=200&text=Leather+Handbag",
-      brand: "Atelier Paris",
-      size: "One Size",
-      color: "Black",
-      quantity: 1,
-    },
-  ])
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shippingCost = orderData.shippingMethod === "standard" ? 0 : orderData.shippingMethod === "express" ? 15 : 35
-  const tax = subtotal * 0.08
-  const total = subtotal + shippingCost + tax
-
-  const getShippingMethodDetails = (method: string) => {
-    switch (method) {
-      case "standard":
-        return { name: "Standard Shipping", time: "5-7 business days", cost: "Free" }
-      case "express":
-        return { name: "Express Shipping", time: "2-3 business days", cost: "$15.00" }
-      case "overnight":
-        return { name: "Overnight Shipping", time: "Next business day", cost: "$35.00" }
-      default:
-        return { name: "Standard Shipping", time: "5-7 business days", cost: "Free" }
-    }
-  }
-
-  const shippingDetails = getShippingMethodDetails(orderData.shippingMethod)
-
-  const handlePlaceOrder = async () => {
-    setIsProcessing(true)
-
-    // Simulate order processing
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    // In a real app, you would:
-    // 1. Process payment
-    // 2. Create order in database
-    // 3. Send confirmation email
-    // 4. Clear cart
-    // 5. Redirect to success page
-
-    router.push("/checkout/success?order=ORD-" + Date.now())
-  }
-
-  const handleEdit = (section: string) => {
-    // In a real app, you would navigate back to checkout with the specific section focused
-    router.push(`/checkout?edit=${section}`)
-  }
 
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6 sm:mb-8">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0">
+          <Button variant="ghost" size="icon" className="shrink-0">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
@@ -151,11 +40,11 @@ export default function VerifyOrder() {
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Package className="h-5 w-5" />
-                  Order Items ({cartItems.length})
+                  Order Items ({singleOrder?.items.length})
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {cartItems.map((item) => {
+                {singleOrder?.items.map((item:any) => {
                   const discountPercentage = item.originalPrice
                     ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)
                     : 0
@@ -165,7 +54,7 @@ export default function VerifyOrder() {
                       <div className="w-16 h-16 sm:w-20 sm:h-20 relative shrink-0">
                         <img
                           src={item.image || "/placeholder.svg"}
-                          alt={item.name}
+                          alt={item.productName}
                           className="object-cover rounded-lg"
                         />
                         {discountPercentage > 0 && (
@@ -173,7 +62,7 @@ export default function VerifyOrder() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-sm sm:text-base truncate">{item.name}</h3>
+                        <h3 className="font-medium text-sm sm:text-base truncate">{item.productName}</h3>
                         <p className="text-xs sm:text-sm text-gray-600">{item.brand}</p>
                         <p className="text-xs sm:text-sm text-gray-600">
                           {item.size} • {item.color} • Qty: {item.quantity}
@@ -202,13 +91,10 @@ export default function VerifyOrder() {
                   <User className="h-5 w-5" />
                   Contact Information
                 </CardTitle>
-                <Button variant="outline" size="sm" onClick={() => handleEdit("contact")} className="bg-transparent">
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
+             
               </CardHeader>
               <CardContent>
-                <p className="text-sm sm:text-base">{orderData.email}</p>
+                <p className="text-sm sm:text-base">{user?.primaryEmailAddress?.emailAddress}</p>
               </CardContent>
             </Card>
 
@@ -219,7 +105,7 @@ export default function VerifyOrder() {
                   <MapPin className="h-5 w-5" />
                   Shipping Address
                 </CardTitle>
-                <Button variant="outline" size="sm" onClick={() => handleEdit("shipping")} className="bg-transparent">
+                <Button variant="outline" size="sm" className="bg-transparent">
                   <Edit className="h-4 w-4 mr-1" />
                   Edit
                 </Button>
@@ -227,72 +113,20 @@ export default function VerifyOrder() {
               <CardContent>
                 <div className="text-sm sm:text-base space-y-1">
                   <p className="font-medium">
-                    {orderData.firstName} {orderData.lastName}
+                   {singleOrder?.shippingAddress.firstName} {singleOrder?.shippingAddress.lastName}
                   </p>
-                  <p>{orderData.address}</p>
+                  <p> {singleOrder?.shippingAddress.street} </p>
                   <p>
-                    {orderData.city}, {orderData.state} {orderData.zipCode}
+                     {singleOrder?.shippingAddress.city} ,  {singleOrder?.shippingAddress.state} .  {singleOrder?.shippingAddress.zipCode} 
                   </p>
-                  <p>{orderData.country}</p>
-                  <p className="text-gray-600">{orderData.phone}</p>
+                  <p>{singleOrder?.shippingAddress.country}</p>
+                  <p className="text-gray-600"> {singleOrder?.shippingAddress.country} </p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Shipping Method */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Truck className="h-5 w-5" />
-                  Shipping Method
-                </CardTitle>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleEdit("shipping-method")}
-                  className="bg-transparent"
-                >
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium text-sm sm:text-base">{shippingDetails.name}</p>
-                    <p className="text-xs sm:text-sm text-gray-600">{shippingDetails.time}</p>
-                  </div>
-                  <p className="font-medium text-sm sm:text-base">{shippingDetails.cost}</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Payment Method */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  Payment Method
-                </CardTitle>
-                <Button variant="outline" size="sm" onClick={() => handleEdit("payment")} className="bg-transparent">
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">VISA</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm sm:text-base">{orderData.cardNumber}</p>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      {orderData.nameOnCard} • Expires {orderData.expiryDate}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        
+          <ShippingMethod />
           </div>
 
           {/* Order Summary */}
@@ -304,49 +138,29 @@ export default function VerifyOrder() {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm sm:text-base">
-                    <span>Subtotal ({cartItems.length} items)</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>Subtotal ({singleOrder?.items.length} items)</span>
+                    <span>${singleOrder?.total.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm sm:text-base">
                     <span>Shipping</span>
-                    <span>{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</span>
                   </div>
                   <div className="flex justify-between text-sm sm:text-base">
                     <span>Tax</span>
-                    <span>${tax.toFixed(2)}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between font-semibold text-base sm:text-lg">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>${singleOrder?.total.toFixed(2)}</span>
                   </div>
                 </div>
 
                 <div className="pt-4 space-y-3">
-                  <Button
-                    className="w-full h-12 text-base font-medium"
-                    size="lg"
-                    onClick={handlePlaceOrder}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Processing...
-                      </div>
-                    ) : (
-                      <>
-                        <CreditCard className="mr-2 h-5 w-5" />
-                       Checkout
-                      </>
-                    )}
-                  </Button>
+                 
+                 <CheckoutPage />
 
                   <Button
                     variant="outline"
                     className="w-full h-12 bg-transparent"
-                    onClick={() => router.back()}
-                    disabled={isProcessing}
                   >
                     Back to Checkout
                   </Button>

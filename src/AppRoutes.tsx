@@ -1,6 +1,6 @@
 import React from 'react'
 import { Navigate, Route, Routes } from "react-router-dom";
-import AdminDashboard from './pages/AdminDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import Home from './pages/home/Home';
 import { SignIn, SignUp } from '@clerk/clerk-react';
 import ProtectedAdminRoutes from './auth/ProtectedAdminRoutes';
@@ -21,7 +21,7 @@ const AppRoutes = () => {
             <Route path='/product/:id' element={<ProductDetails />} />
             <Route path='/cart' element={<Cart />} />
             <Route path='/create-order' element={<CreateOrder />} />
-            <Route path='/verify-order' element={<VerifyOrder />} />
+            <Route path='/create-order/verify-order/:id' element={<VerifyOrder />} />
             
                 <Route path='/admin' element={
                     <ProtectedAdminRoutes>

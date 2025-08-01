@@ -10,7 +10,8 @@ import { Separator } from "@/components/ui/separator"
 import { useGetUser, useUpdateUser } from "@/apiServices/UserApi"
 import { useUser } from "@clerk/clerk-react"
 import PersonalInformation from "./components/PersonalInformation"
-import ProfileOrders from "./components/profileOrders"
+import ProfileOrders from "./components/ProfileOrders"
+import { UserInput } from "@/types"
 
 export default function ProfilePage() {
     const { currentUser } = useGetUser();
@@ -18,22 +19,38 @@ export default function ProfilePage() {
     const {user} = useUser()
     console.log(currentUser)
     useEffect(() => {
-     currentUser
-    }, [currentUser])
+  if (currentUser) {
+    setProfileData({
+      firstName: currentUser.firstName || "",
+      lastName: currentUser.lastName || "",
+      email: currentUser.email || "",
+      phone: currentUser.phone || "",
+      address: {
+        street: currentUser.address?.street || "",
+        city: currentUser.address?.city || "",
+        state: currentUser.address?.state || "",
+        zipCode: currentUser.address?.zipCode || "",
+        country: currentUser.address?.country || "",
+      },
+    });
+  }
+}, [currentUser]);
     
     // console.log(user)
   const [activeTab, setActiveTab] = useState("profile")
   const [isEditing, setIsEditing] = useState<boolean>(false)
-  const [profileData, setProfileData] = useState({
-    firstName: currentUser?.firstName,
-    lastName: currentUser?.lastName,
-    email: currentUser?.email,
-    phone: currentUser?.phone,
-    street: currentUser?.address.street,
-    city: currentUser?.address.city,
-    state: currentUser?.address.state,
-    zipCode: currentUser?.address.zipCode,
-    country: currentUser?.address.country,
+  const [profileData, setProfileData] = useState<UserInput>({
+    firstName: currentUser?.firstName || "",
+    lastName: currentUser?.lastName || "",
+    email: currentUser?.email || "",
+    phone: currentUser?.phone || "",
+      address: {
+    street: currentUser?.address?.street || "",
+    city: currentUser?.address?.city || "",
+    state: currentUser?.address?.state || "",
+    zipCode: currentUser?.address?.zipCode || "",
+    country: currentUser?.address?.country || "",
+  },
   })
 
         console.log(profileData.firstName)
@@ -46,25 +63,15 @@ export default function ProfilePage() {
           lastName: profileData.lastName,
           email: profileData.email,
           phone: profileData.phone,
-          street: profileData.street,
-          city: profileData.city,
-          state: profileData.state,
-          zipCode: profileData.zipCode,
-          country: profileData.country,})
+        address: {
+          street: profileData.address.street,
+          city: profileData.address.city,
+          state: profileData.address.state,
+          zipCode: profileData.address.zipCode,
+          country: profileData.address.country},})
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "delivered":
-        return "bg-green-100 text-green-800"
-      case "shipped":
-        return "bg-blue-100 text-blue-800"
-      case "processing":
-        return "bg-yellow-100 text-yellow-800"
-      default:
-        return "bg-gray-100 text-gray-800"
-    }
-  }
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -103,7 +110,7 @@ export default function ProfilePage() {
           </TabsList>
 
           <TabsContent value="profile" className="mt-6">
-            <PersonalInformation updateUser={updateUser} setProfileData={setProfileData} profileData={profileData} setIsEditing={setIsEditing} handleSave={handleSave} isEditing={isEditing} />
+            <PersonalInformation setProfileData={setProfileData} profileData={profileData} setIsEditing={setIsEditing} handleSave={handleSave} isEditing={isEditing} />
           </TabsContent>
 
           <TabsContent value="orders" className="mt-6">
