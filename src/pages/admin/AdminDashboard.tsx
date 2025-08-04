@@ -20,9 +20,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { useGetProducts } from "@/apiServices/ProductApi"
 import { useGetAllOrders } from "@/apiServices/orderServices"
 import AdminOrder from "./components/orders/AdminOrder"
-import AdminProducts from "./components/AdminProducts"
+import AdminProducts from "./components/products/AdminProducts"
 import { Order } from "@/types"
 import Users from "./components/users/Users"
+import CreateProduct from "./components/products/createProducts/CreateProduct"
 
 export default function AdminPage() {
   const { allOrders } = useGetAllOrders();
@@ -50,9 +51,7 @@ export default function AdminPage() {
   const totalRevenue = allOrders?.reduce((acc:number, order:Order)=> acc + order.total, 0)
 
 
-  const latestProducts = allOrders
-  .sort((a:any, b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-  .slice(0, 5);
+  const latestProducts = allOrders?.sort((a:any, b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -87,78 +86,7 @@ export default function AdminPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <Dialog open={isAddProductOpen} onOpenChange={setIsAddProductOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Add New Product</DialogTitle>
-              <DialogDescription>Create a new product for your store</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name">Product Name</Label>
-                  <Input
-                    id="name"
-                    value={newProduct.name}
-                    onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="brand">Brand</Label>
-                  <Input
-                    id="brand"
-                    value={newProduct.brand}
-                    onChange={(e) => setNewProduct({ ...newProduct, brand: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="price">Price</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={newProduct.price}
-                    onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="category">Category</Label>
-                  <select
-                    id="category"
-                    value={newProduct.category}
-                    onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  >
-                    <option value="clothing">Clothing</option>
-                    <option value="accessories">Accessories</option>
-                    <option value="shoes">Shoes</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={newProduct.description}
-                  onChange={(e:any) => setNewProduct({ ...newProduct, description: e.target.value })}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddProductOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleAddProduct}>Add Product</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+       <CreateProduct />
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -194,7 +122,7 @@ export default function AdminPage() {
                 <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${totalRevenue.toLocaleString()}</div>
+                <div className="text-2xl font-bold">${totalRevenue?.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground">+8% from last month</p>
               </CardContent>
             </Card>
@@ -225,7 +153,7 @@ export default function AdminPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {latestProducts.map((order:Order) => (
+                  {latestProducts?.map((order:Order) => (
                     <TableRow key={order.orderNumber}>
                       <TableCell className="font-medium">{order.orderNumber}</TableCell>
                       <TableCell>{order.shippingAddress.firstName}</TableCell>
@@ -238,6 +166,7 @@ export default function AdminPage() {
                   ))}
                 </TableBody>
               </Table>
+              
             </CardContent>
           </Card>
         </TabsContent>

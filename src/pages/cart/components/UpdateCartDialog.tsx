@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useUpdateCartItem } from '@/apiServices/CartServices'
 import { Edit2, Minus, Plus } from 'lucide-react'
 import React, { useState } from 'react'
-import { CartItem, Variant } from '@/types'
+import { CartItem } from '@/types'
 
 interface UpdateCartDialogProps {
   cartItem: CartItem;
@@ -79,6 +79,8 @@ const UpdateCartDialog: React.FC<UpdateCartDialogProps> = ({ cartItem, onUpdate 
       console.error('Error updating cart item:', error);
     }
   };
+
+  
 
   const handleQuantityChange = (increment: boolean) => {
     const maxQuantity = currentVariant?.inventory || 1;

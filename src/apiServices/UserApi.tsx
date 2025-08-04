@@ -87,3 +87,10 @@ export const useUpdateUser = () => {
   return {updateUser}
   
 }
+
+export const useGetAllUsers = () => {
+  const { getToken } = useAuth();
+  const getAllUsers = async () => {
+    
+  }
+}

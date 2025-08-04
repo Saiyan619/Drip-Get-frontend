@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useGetAllOrders } from '@/apiServices/orderServices'
 import { Order } from '@/types'
+import UpdateOrder from './components/UpdateOrder'
 
 const AdminOrder = () => {
     const { allOrders } = useGetAllOrders();
@@ -66,10 +67,13 @@ const AdminOrder = () => {
                               <Eye className="mr-2 h-4 w-4" />
                               View Details
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 h-4 w-4" />
+                            {/* <DropdownMenuItem>
                               Update Status
-                            </DropdownMenuItem>
+                            </DropdownMenuItem> */}
+                          <div className='ml-2 text-sm'>
+                            <UpdateOrder id={order._id} initialStatus={ order.status } />
+
+                            </div>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

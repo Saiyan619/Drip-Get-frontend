@@ -107,4 +107,31 @@ const getOrderById = async (orderId: string) => {
     const {mutateAsync:createNewOrder, isPending}= useMutation({mutationFn: createOrder})
     return{createNewOrder}
 }
-
+type UpdateOrderProps = {
+    id: string;
+    status: string;
+}
+export const useUpdateOrder = () => {
+    const { getToken } = useAuth();
+    const updateOrder = async ({id, status}:UpdateOrderProps) => {
+        const token = await getToken();
+        const response = await fetch(`${API_BASE_URL}/api/orders/admin/orders/${id}/status`, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ status }), 
+        })
+        if (!response.ok) {
+            throw new Error("Cant update order");
+        }
+        const data = await response.json()
+        console.log(data)
+        return data
+    }
+    const { mutateAsync:updateUserOrder, isPending } = useMutation({
+        mutationFn:updateOrder
+    })
+    return {updateUserOrder}
+}

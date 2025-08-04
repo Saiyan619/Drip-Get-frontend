@@ -12,8 +12,8 @@ export interface UserAddress{
   zipCode: string
   country: string
 }
-
-export interface Variant {
+//For response
+export interface ProductVariant {
   _id: string;
   size: string;
   color: string;
@@ -29,9 +29,86 @@ export interface Product {
   price: number;
   salePrice?: number | null;
   images: string[];
-  variants: Variant[];
+  variants: ProductVariant[];
   isActive: boolean;
   createdAt: string;
+}
+
+// for request
+export interface VariantInput {
+  size: string;
+  color: string;
+  inventory: number;
+  sku: string;
+}
+
+// interface ImageFile {
+//   file: File;
+//   preview: string;
+//   name: string;
+// }
+
+// export interface CreateProductInput {
+//   name: string;
+//   description: string;
+//   category: string;
+//   price: number;
+//   salePrice?: number;
+//   images: ImageFile[];
+//   variants: VariantInput[];
+// }
+
+// Discriminated union for images
+export interface NewImageFile {
+  type: 'new';
+  file: File;
+  preview: string;
+  name: string;
+}
+
+export interface ExistingImage {
+  type: 'existing';
+  url: string;
+  name: string;
+  id: string;
+}
+
+type ProductImage = NewImageFile | ExistingImage;
+
+// Update your existing CreateProductInput to use the new image type
+export interface CreateProductInput {
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  salePrice?: number;
+  images: ProductImage[]; // Changed from ImageFile[] to ProductImage[]
+  variants: VariantInput[];
+}
+
+// Helper functions for type checking
+export const isNewImage = (image: ProductImage): image is NewImageFile => {
+  return image.type === 'new';
+};
+
+export const isExistingImage = (image: ProductImage): image is ExistingImage => {
+  return image.type === 'existing';
+};
+
+interface UpdateImageFile {
+  file: File;
+  preview: string;
+  name: string;
+}
+
+export interface UpdateProductInput {
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  salePrice?: number;
+  images: string[];
+  variants: VariantInput[];
 }
 
 export interface ApiResponse {
