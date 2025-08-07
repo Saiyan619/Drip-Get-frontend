@@ -3,7 +3,6 @@ import { useState } from "react"
 import { Plus, Trash2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-
 import {
   Dialog,
   DialogContent,
@@ -15,15 +14,15 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { CreateProductInput, isNewImage, NewImageFile, ProductVariant } from '@/types'
-import { useCreateProduct } from '@/apiServices/ProductApi'
+import { useCreateProduct, useGetProducts } from '@/apiServices/ProductApi'
 import Variants from './components/Variants'
 import Pricing from './components/Pricing'
 import BasicInfo from './components/BasicInfo'
 
 const CreateProduct = () => {
-    const { createNewProduct } = useCreateProduct();
+  const { createNewProduct, isPending } = useCreateProduct();
+  const { refetch } = useGetProducts();
   const [isAddProductOpen, setIsAddProductOpen] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [newProduct, setNewProduct] = useState<CreateProductInput>({
     name: "",
     description: "",
@@ -114,7 +113,6 @@ const CreateProduct = () => {
       return
     }
 
-    setIsSubmitting(true)
 
     try {
       // Auto-generate SKUs if not provided
@@ -140,7 +138,8 @@ const CreateProduct = () => {
           })),
         }
 
-        await createNewProduct(product)
+      await createNewProduct(product)
+      await refetch();
 
 
       // Reset form
@@ -158,7 +157,6 @@ const CreateProduct = () => {
       console.error("Error creating product:", error)
       alert("Error creating product. Please try again.")
     } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -234,11 +232,11 @@ const CreateProduct = () => {
             </div>
 
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddProductOpen(false)} disabled={isSubmitting}>
+              <Button variant="outline" onClick={() => setIsAddProductOpen(false)} disabled={isPending}>
                 Cancel
               </Button>
-              <Button onClick={handleAddProduct} disabled={isSubmitting}>
-                {isSubmitting ? (
+              <Button onClick={handleAddProduct} disabled={isPending}>
+                {isPending ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     Creating...

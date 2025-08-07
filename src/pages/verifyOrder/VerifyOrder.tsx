@@ -50,7 +50,7 @@ export default function VerifyOrder() {
                     : 0
 
                   return (
-                    <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-4 p-4 rounded-lg">
                       <div className="w-16 h-16 sm:w-20 sm:h-20 relative shrink-0">
                         <img
                           src={item.image || "/placeholder.svg"}
@@ -105,10 +105,6 @@ export default function VerifyOrder() {
                   <MapPin className="h-5 w-5" />
                   Shipping Address
                 </CardTitle>
-                <Button variant="outline" size="sm" className="bg-transparent">
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
               </CardHeader>
               <CardContent>
                 <div className="text-sm sm:text-base space-y-1">

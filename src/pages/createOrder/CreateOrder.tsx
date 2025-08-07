@@ -1,10 +1,7 @@
 import { useState } from "react"
-import { CreditCard, Truck, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Separator } from "@/components/ui/separator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Link, useNavigate } from "react-router-dom"
 import { useCreateOrder } from "@/apiServices/orderServices"
@@ -14,14 +11,14 @@ import { useGetUser } from "@/apiServices/UserApi"
 import { useUser } from "@clerk/clerk-react"
 
 export default function CreateOrder() {
-  const { createNewOrder } = useCreateOrder();
+  const { createNewOrder, isPending } = useCreateOrder();
   const { currentUser } = useGetUser();
   const { user } = useUser();
   const [formData, setFormData] = useState({
     // email: user?.primaryEmailAddress, // Assuming user has emailAddresses
   firstName: "",
   lastName: "",
-  street: "", // Changed from `street`
+  street: "", 
   city: "",
   state: "",
   zipCode: "",
@@ -60,14 +57,6 @@ export default function CreateOrder() {
   }
  
 
-  const shippingSummary = {
-      shippingMethod: "standard",
-    paymentMethod: "card",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-    nameOnCard: "",
-  }
 
   const orderSummary = {
     subtotal: 1548,
@@ -76,32 +65,17 @@ export default function CreateOrder() {
     total: 1671.84,
   }
 
-  type orderSummaryType = {
-    subtotal: number;
-    shipping: number;
-    tax: number;
-    total: number;
-}
-
-
-  // const getUser = () => {
-  //   console.log(currentUser)
-  // }
-
 
   const navigate = useNavigate();
    const handlePlacingOrder = () => {
       createNewOrder(orderData)
-        .then((data) => {  // The data returned from your API
-      console.log("Order data:", data) // This is your API response
-      
-      // Now you can access the order ID or any other data from the response
-      
+        .then((data) => {  
+      console.log("Order data:", data)
+            
       navigate(`verify-order/${data.orderId}`)
         })
         .catch((error) => {
           console.error("Error placing order:", error)
-          alert("Failed to place order. Please try again.")
         })
     }
   
@@ -239,7 +213,7 @@ export default function CreateOrder() {
 
           
 
-            <PlacingOrder handlePlacingOrder={handlePlacingOrder} orderSummary={orderSummary} />
+            <PlacingOrder handlePlacingOrder={handlePlacingOrder} isPending={isPending} orderSummary={orderSummary} />
        
         </div>
       </div>

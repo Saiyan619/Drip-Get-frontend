@@ -1,10 +1,12 @@
 import { Cart, CartItem, CartItemInput } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useAddToCart = () => {
-                  const { getToken } = useAuth();
+  const { getToken } = useAuth();
+  
 
     const addToCart = async (cartParam: CartItemInput) => {
                 const token = await getToken();
@@ -30,8 +32,17 @@ export const useAddToCart = () => {
                 console.log(data)
 
         return data
+  }
+  const {mutateAsync:addCart, isPending} = useMutation({
+    mutationFn: addToCart,
+     onSuccess: () => {
+      toast.success("Added to cart successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to add to cart. Please try again.");
     }
-    return { addToCart };
+  })
+    return { addCart, isPending };
 }
 
 export const useGetCart = () => {
@@ -58,7 +69,8 @@ export const useGetCart = () => {
 
     const {data, isPending, error, refetch} = useQuery({
     queryKey: ["getCart"],
-    queryFn: getCart,
+      queryFn: getCart,
+    
   });
     return { data, refetch };
 }
@@ -97,17 +109,20 @@ export const useUpdateCartItem = () => {
   const {
     mutateAsync: updateSingleCart,
     isPending,
-    isError,
-    isSuccess,
   } = useMutation({ 
     mutationFn: updateCartItem,
     onSuccess: () => {
       // Invalidate cart queries to refetch fresh data
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart'] }),
+      toast.success("Cart Updated successfully!");
+
+    },
+    onError: () => {
+      toast.error("Failed to Update cart. Please try again.");
     }
   });
 
-  return { updateSingleCart, isPending, isError, isSuccess };
+  return { updateSingleCart, isPending };
 };
 
 
@@ -133,6 +148,15 @@ export const useDeleteCart = () => {
         const data = await response.json();
         console.log(data)
         return data
+  }
+  const {mutateAsync:deleteUserCart, isPending} = useMutation({
+    mutationFn: deleteCart,
+    onSuccess:() => {
+      toast.success("Cart deleted")
+    },
+    onError: () => {
+      toast.error("Cannot delete cart.Something went wrong!!!")
     }
-    return { deleteCart };
+  })
+    return { deleteUserCart, isPending };
 }

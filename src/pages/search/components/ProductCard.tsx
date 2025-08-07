@@ -3,14 +3,16 @@ import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/c
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Product } from '@/types';
-import { useAddToCart } from '@/apiServices/CartServices';
+import { useAddToCart, useGetCart } from '@/apiServices/CartServices';
+import { Link } from 'react-router-dom';
 
 type ProductCardProps = {
   product: Product;
 };
 
 export const ProductCard = ({ product }: ProductCardProps) => {
-  const { addToCart } = useAddToCart();
+  const { addCart, isPending } = useAddToCart();
+  const { refetch } = useGetCart();
 
   // Temporary defaults (replace with actual UI selections)
   const [selectedSize] = useState(product.variants[0]?.size || '');
@@ -19,12 +21,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   const handleAddToCart = async () => {
     try {
-      await addToCart({
+      await addCart({
         productId: product._id,
         size: selectedSize,
         color: selectedColor,
         quantity,
       });
+      await refetch();
     } catch (error) {
       console.error("Failed to add to cart:", error);
     }
@@ -33,13 +36,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardContent className="p-0">
-        <div className="aspect-square overflow-hidden rounded-t-lg">
+        <Link to={`/product/${product._id}`}>
+         <div className="aspect-square overflow-hidden rounded-t-lg">
           <img
             src={product.images[0] || '/api/placeholder/400/400'}
             alt={product.name}
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
         </div>
+        </Link>
         <div className="p-6">
           <div className="flex justify-between items-start mb-2">
             <CardTitle className="text-lg">{product.name}</CardTitle>
@@ -77,7 +82,16 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
           <Button onClick={handleAddToCart} className="w-full">
-            Add to Cart
+         {
+  isPending ? (
+    <div className="flex items-center gap-2">
+      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      <span>Adding</span>
+    </div>
+  ) : (
+    "Add to Cart"
+  )
+}
           </Button>
         </div>
       </CardContent>

@@ -10,11 +10,10 @@ const Footer = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Gamepad2 className="h-6 w-6 text-primary" />
-                <span className="text-xl font-bold">GameVault</span>
+                <span className="text-xl font-bold">Drip Get</span>
               </div>
               <p className="text-muted-foreground mb-4">
-                Your ultimate destination for the latest games and gaming experiences.
+                Your ultimate destination for the latest Fits and Shopping experiences.
               </p>
               <div className="flex gap-4">
                 <Button size="icon" variant="ghost">
@@ -30,19 +29,19 @@ const Footer = () => {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Games</h3>
+              <h3 className="font-semibold mb-4">Clothing</h3>
               <div className="space-y-2">
                 <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">
                   New Releases
                 </Link>
                 <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">
-                  Top Rated
+                  Top Fits
                 </Link>
                 <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">
                   Coming Soon
                 </Link>
                 <Link to="#" className="block text-muted-foreground hover:text-foreground transition-colors">
-                  Free Games
+                  Free Fits
                 </Link>
               </div>
             </div>
@@ -85,7 +84,7 @@ const Footer = () => {
           </div>
 
           <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 GameVault. All rights reserved.</p>
+            <p>&copy; 2025 DripGet. All rights reserved.</p>
           </div>
         </div>
       </footer>

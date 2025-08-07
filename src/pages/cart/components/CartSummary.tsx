@@ -15,18 +15,18 @@ const CartSummary = ({ cartItems }: CartSummaryProps) => {
   const total = cartItems.reduce((sum, item) => {
     const itemPrice = item?.productId.salePrice || item?.productId.price;
     return sum + itemPrice * item.quantity;
-  },0)
+  }, 0)
   console.log(total)
+  
   return (
     <div>
        {/* Order Summary */}
         {cartItems.length > 0 && (
           <div className="lg:col-span-1">
-            <div className="bg-gray-50 p-6 rounded-lg sticky top-8">
-              <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
-
+            <div className="bg-muted p-6 rounded-lg sticky top-8">
+              <h2 className="text-xl font-semibold mb-6 text-foreground">Order Summary</h2>
               <div className="space-y-4 mb-6">
-                <div className="flex justify-between">
+                <div className="flex justify-between text-foreground">
                   <span>Subtotal ({cartItems.length} items)</span>
                   {/* <span>${subtotal.toFixed(2)}</span> */}
                 </div>
@@ -45,32 +45,28 @@ const CartSummary = ({ cartItems }: CartSummaryProps) => {
                   <span>${tax.toFixed(2)}</span>
                 </div> */}
                 <Separator />
-                <div className="flex justify-between font-semibold text-lg">
+                <div className="flex justify-between font-semibold text-lg text-foreground">
                   <span>Total</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
               </div>
-
-            
+           
                 <div className="space-y-4 mb-6">
                   <div className="flex gap-2">
-                    <Input placeholder="Promo code"  />
-                    <Button variant="outline" >
+                    <Input placeholder="Promo code" />
+                    <Button variant="outline">
                       Apply
                     </Button>
                   </div>
-                  <p className="text-xs text-gray-500">Try: SAVE10 or WELCOME20</p>
+                  <p className="text-xs text-muted-foreground">Try: SAVE10 or WELCOME20</p>
                 </div>
  
-
               <Button className="w-full mb-4" size="lg" asChild>
                 <Link to="/create-order">Proceed to Place Order</Link>
               </Button>
-
-              <Button variant="outline" className="w-full mb-4 bg-transparent" asChild>
+              <Button variant="outline" className="w-full mb-4" asChild>
                 <Link to="/search">Continue Shopping</Link>
               </Button>
-
               {/* {shipping > 0 && (
                 <div className="bg-blue-50 p-3 rounded-lg">
                   <p className="text-sm text-blue-800 text-center">
@@ -78,8 +74,7 @@ const CartSummary = ({ cartItems }: CartSummaryProps) => {
                   </p>
                 </div>
               )} */}
-
-              <div className="mt-6 space-y-3 text-sm text-gray-600">
+              <div className="mt-6 space-y-3 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Truck className="h-4 w-4" />
                   <span>Free shipping on orders over $200</span>

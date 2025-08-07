@@ -12,6 +12,21 @@ export interface UserAddress{
   zipCode: string
   country: string
 }
+
+export interface AllUserResponse{
+  email: string
+  firstName: string
+  lastName: string
+  createdAt: string
+  orders: [
+    {
+      orderNumber: string
+      status: string
+      total: number
+    }
+  ][];
+  totalOrderAmount:number
+};
 //For response
 export interface ProductVariant {
   _id: string;

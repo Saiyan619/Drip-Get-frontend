@@ -3,8 +3,9 @@ import { Button } from '@/components/ui/button';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import React from 'react'
 import Header from './components/Header';
-import FeaturedGames from './components/FeaturedClothes';
-import GameCategories from './components/ProductCategories';
+import FeaturedClothes from './components/LatestClothes';
+import ProductCategories from './components/ProductCategories';
+import { useGetProducts } from '@/apiServices/ProductApi';
     
 
 
@@ -39,13 +40,12 @@ const Home = () => {
 }
   return (
     <div>
-      {/* Home
-      Home 
+      {/* 
       <Button onClick={createMyUser}>register</Button> */}
-      <Button onClick={tokenFunc}>register</Button> 
+      {/* <Button onClick={tokenFunc}>register</Button>  */}
       <Header />
-      <FeaturedGames />
-      <GameCategories />
+      <FeaturedClothes />
+      {/* <ProductCategories /> */}
     </div>
   )
 }

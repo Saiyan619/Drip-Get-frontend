@@ -9,7 +9,7 @@ const gameCategories = [
   { name: "Strategy", icon: Users, count: 156, image: "/placeholder.svg?height=200&width=300" },
   { name: "Sports", icon: Play, count: 98, image: "/placeholder.svg?height=200&width=300" },
 ]
-const GameCategories = () => {
+const ProductCategories = () => {
   return (
     <section className="py-20 px-20 bg-muted/50">
         <div className="container">
@@ -51,4 +51,4 @@ const GameCategories = () => {
   )
 }
 
-export default GameCategories
+export default ProductCategories

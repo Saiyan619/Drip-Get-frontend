@@ -1,6 +1,7 @@
 import { Order, OrderDataInput } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useGetAllOrders = () => {
@@ -24,7 +25,7 @@ export const useGetAllOrders = () => {
         queryKey: ["getAllOrders"],
         queryFn: getAllOrders,
     })
-    return { allOrders };
+    return { allOrders, refetch };
 };
 
 export const useGetMyOrders = () => {
@@ -104,8 +105,17 @@ const getOrderById = async (orderId: string) => {
 
 
     };
-    const {mutateAsync:createNewOrder, isPending}= useMutation({mutationFn: createOrder})
-    return{createNewOrder}
+     const { mutateAsync: createNewOrder, isPending } = useMutation(
+         {
+             mutationFn: createOrder,
+             onSuccess: () => {
+                 toast.success("Order Placed successfully")
+             },
+             onError: () => {
+                 toast.error("Error.Something went wrong!")
+             }
+          })
+    return{createNewOrder, isPending}
 }
 type UpdateOrderProps = {
     id: string;
@@ -131,7 +141,13 @@ export const useUpdateOrder = () => {
         return data
     }
     const { mutateAsync:updateUserOrder, isPending } = useMutation({
-        mutationFn:updateOrder
+        mutationFn: updateOrder,
+        onSuccess: () => {
+            toast.success("Order Updated successfully!")
+        },
+        onError: () => {
+            toast.error("Order Failed: Something went wrong")
+        }
     })
-    return {updateUserOrder}
+    return {updateUserOrder, isPending}
 }

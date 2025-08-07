@@ -1,13 +1,7 @@
-import { useState } from "react"
 import { CreditCard, Truck, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Link } from "react-router-dom"
-import { useCreateOrder } from "@/apiServices/orderServices"
 
 type orderSummaryType = {
     subtotal: number;
@@ -18,10 +12,11 @@ type orderSummaryType = {
 
 type PlacingOrdertotalProps = {
     orderSummary: orderSummaryType;
-    handlePlacingOrder: () => void;
+  handlePlacingOrder: () => void;
+    isPending:boolean
 }
 
-const PlacingOrder = ({orderSummary,handlePlacingOrder}:PlacingOrdertotalProps) => {
+const PlacingOrder = ({orderSummary,handlePlacingOrder, isPending}:PlacingOrdertotalProps) => {
   return (
     <div>
          {/* Order Summary */}
@@ -52,9 +47,14 @@ const PlacingOrder = ({orderSummary,handlePlacingOrder}:PlacingOrdertotalProps) 
                   </div>
                 </div>
 
-                      <Button className="w-full" size="lg" onClick={handlePlacingOrder}>
+                      <Button className="w-full" size="lg" disabled={isPending} onClick={handlePlacingOrder}>
                   <CreditCard className="mr-2 h-5 w-5" />
-                  Place Order
+              {isPending ? (
+                <div className="flex items-center gap-2">
+       <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+<span>Placing...</span>
+                </div>)
+                : "Place Order"}
                 </Button>
 
               

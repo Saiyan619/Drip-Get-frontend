@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from '@/components/ui/button'
-import { useUpdateOrder } from '@/apiServices/orderServices'
+import { useGetAllOrders, useUpdateOrder } from '@/apiServices/orderServices'
 import { Edit, Loader2 } from 'lucide-react'
 
 type updateOrderProps = {
@@ -27,23 +27,19 @@ type updateOrderProps = {
     initialStatus: string;
 }
 const UpdateOrder = ({ id, initialStatus }: updateOrderProps) => {
-    const { updateUserOrder } = useUpdateOrder();
+  const { updateUserOrder, isPending } = useUpdateOrder();
+  const { refetch } = useGetAllOrders();
     const [status, setStatus] = useState(initialStatus);
     const [open, setOpen] = useState(false);
-      const [isUpdating, setIsUpdating] = useState(false);
      
       const handleUpdateOrder = async () => {
-        setIsUpdating(true);
         try {
-          await updateUserOrder({id, status:status});
-          // Only close dialog if deletion was successful
+          await updateUserOrder({ id, status: status });
+          await refetch
           setOpen(false);
         } catch (error) {
           console.error('Failed to delete product:', error);
-          // You might want to show an error message to the user here
-          // The dialog remains open so user can try again or cancel
-        } finally {
-          setIsUpdating(false);
+
         }
       }
   
@@ -88,8 +84,8 @@ const UpdateOrder = ({ id, initialStatus }: updateOrderProps) => {
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button onClick={handleUpdateOrder}
-                          disabled={isUpdating} type="submit">
-                                        {isUpdating ? (
+                          disabled={isPending} type="submit">
+                                        {isPending ? (
                                           <>
                                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                             Updating...

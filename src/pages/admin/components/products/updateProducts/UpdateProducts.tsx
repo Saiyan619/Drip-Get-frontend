@@ -27,10 +27,9 @@ type updateProductProp = {
 
 
 const UpdateProducts = ({ id, open, onOpenChange }: updateProductProp) => {
-  const { updateProductData } = useUpdateProduct();
+  const { updateProductData, isPending } = useUpdateProduct();
   const { data } = useGetSingleProduct(id);
   
-  const [isSubmitting, setIsSubmitting] = useState(false)
   
   // Initialize with empty state first
   const [editProduct, setEditProduct] = useState<CreateProductInput>({
@@ -91,7 +90,6 @@ const UpdateProducts = ({ id, open, onOpenChange }: updateProductProp) => {
       return;
     }
 
-    setIsSubmitting(true);
 
     try {
       const variantsWithSKU = editProduct.variants.map((variant) => ({
@@ -147,9 +145,7 @@ console.log(productData)
     } catch (error) {
       console.error("Error updating product:", error);
       alert("Error updating product. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    } 
   };
 
   const updateEditVariant = (index: number, field: keyof ProductVariant, value: string | number) => {
@@ -427,7 +423,7 @@ console.log(productData)
 
           {/* Current Product Info */}
           {data && (
-            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+            <div className="space-y-4 p-4 rounded-lg">
               <h3 className="text-lg font-semibold">Current Product Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
@@ -456,12 +452,12 @@ console.log(productData)
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={isSubmitting}
+            disabled={isPending}
           >
             Cancel
           </Button>
-          <Button onClick={handleUpdateProduct} disabled={isSubmitting}>
-            {isSubmitting ? (
+          <Button onClick={handleUpdateProduct} disabled={isPending}>
+            {isPending ? (
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 Updating...

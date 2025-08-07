@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Product } from '@/types'
-import { useDeleteProducts, useGetProducts } from '@/apiServices/ProductApi'
+import { useGetProducts } from '@/apiServices/ProductApi'
 import UpdateProducts from './updateProducts/UpdateProducts'
 import DeleteProduct from './deleteProduct/DeleteProduct'
 

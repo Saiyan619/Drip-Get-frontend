@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ApiResponse, CreateProductInput, FilterParams, isExistingImage, isNewImage, Product } from '@/types';
 import { useAuth } from "@clerk/clerk-react";
+import { toast } from "sonner";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -31,12 +32,12 @@ export const useGetProducts = (filters: FilterParams = {}) => {
     return response.json();
   };
 
-  const { data, isPending, error } = useQuery({
+  const { data, isPending, error, refetch } = useQuery({
     queryKey: ["getAllProducts", filters],
     queryFn: getProducts
   });
 
-  return { data, isPending, error };
+  return { data, isPending, error, refetch };
 };
 
 export const useGetSingleProduct = (id:string | undefined) => {
@@ -89,9 +90,11 @@ if (input.salePrice !== undefined && input.salePrice !== null) {
     formData.append("variants", JSON.stringify(input.variants));
 
     // Append each image file
-    input.images.forEach((file) => {
-      formData.append("images", file.name);
-    });
+   input.images.forEach((img) => {
+  if (img.type === 'new') {
+    formData.append('images', img.file); 
+  }
+});
 
     const response = await fetch(`${API_BASE_URL}/api/products/admin/products`, {
       method: "POST",
@@ -108,8 +111,16 @@ if (input.salePrice !== undefined && input.salePrice !== null) {
     console.log("Created product", data);
     return data
   }
-  const { mutateAsync: createNewProduct, isPending } = useMutation({ mutationFn: createProduct })
-  return {createNewProduct}
+  const { mutateAsync: createNewProduct, isPending } = useMutation({
+    mutationFn: createProduct,
+    onSuccess: () => {
+      toast.success("Product Added succesfully!")
+    },
+    onError: () => {
+      toast.success("Product Error: Something went wrong!")
+    }
+   })
+  return {createNewProduct, isPending}
 }
 
 type updateProductProp = {
@@ -188,7 +199,6 @@ export const useUpdateProduct = () => {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
-        // Don't set Content-Type when using FormData - let the browser set it
       },
       body: formData
     });
@@ -204,11 +214,17 @@ export const useUpdateProduct = () => {
     return data;
   }
   
-  const { mutateAsync: updateProductData } = useMutation({
-    mutationFn: updateProduct
+  const { mutateAsync: updateProductData, isPending } = useMutation({
+    mutationFn: updateProduct,
+    onSuccess: () => {
+      toast.success("Product updated successfully")
+    },
+    onError: () => {
+      toast.error("Product update Error: Something went wrong")
+    }
   });
   
-  return { updateProductData };
+  return { updateProductData, isPending };
 }
 
 

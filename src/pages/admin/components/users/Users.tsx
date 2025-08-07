@@ -9,8 +9,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Product } from '@/types'
 import { useGetProducts } from '@/apiServices/ProductApi'
+import { useGetAllUsers } from "@/apiServices/UserApi"
 
 const Users = () => {
+  const { allUsers } = useGetAllUsers();
+  // console.log(allUsers)
   return (
     <div>
         <Card>
@@ -29,27 +32,29 @@ const Users = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
+                  {/* <TableRow>
                     <TableCell className="font-medium">Sarah Johnson</TableCell>
                     <TableCell>sarah.johnson@email.com</TableCell>
                     <TableCell>23</TableCell>
                     <TableCell>$4,567</TableCell>
                     <TableCell>Jan 15, 2023</TableCell>
+                  </TableRow> */}
+              {allUsers?.map((user) => {
+                return (
+                 <TableRow>
+                    <TableCell className="font-medium">{user.firstName} {user.lastName}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.orders.length}</TableCell>
+                    <TableCell>${user.totalOrderAmount}</TableCell>
+                    <TableCell>{new Date(user.createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })}</TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Mike Chen</TableCell>
-                    <TableCell>mike.chen@email.com</TableCell>
-                    <TableCell>18</TableCell>
-                    <TableCell>$3,245</TableCell>
-                    <TableCell>Feb 3, 2023</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Emma Davis</TableCell>
-                    <TableCell>emma.davis@email.com</TableCell>
-                    <TableCell>12</TableCell>
-                    <TableCell>$2,890</TableCell>
-                    <TableCell>Mar 8, 2023</TableCell>
-                  </TableRow>
+              )
+              })}
+                 
                 </TableBody>
               </Table>
             </CardContent>

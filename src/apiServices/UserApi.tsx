@@ -1,4 +1,4 @@
-import { UserInput } from "@/types";
+import { AllUserResponse, UserInput } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -90,7 +90,25 @@ export const useUpdateUser = () => {
 
 export const useGetAllUsers = () => {
   const { getToken } = useAuth();
-  const getAllUsers = async () => {
-    
+  const getAllUsers = async ():Promise<AllUserResponse[]> => {
+    const token = await getToken();
+    const response = await fetch(`${API_BASE_URL}/api/auth/admin/users`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
+    if (!response.ok) {
+      throw new Error("Get All users")
+    }
+    const data = await response.json();
+    console.log(data)
+    return data
   }
-}
+  const { data: allUsers } = useQuery({
+    queryKey: ["fetchAllUsers"],
+    queryFn: getAllUsers
+  })
+  return { allUsers }
+};
