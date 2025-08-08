@@ -5,17 +5,19 @@ import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowRight, Heart, ShoppingCart, Star } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+const HighestPriceProduct = () => {
+      const { data } = useGetProducts();
+    const highestPrices = [...data?.products || []] // spread to avoid mutating original
+  .sort((a, b) => b.price - a.price) // highest first
+  .slice(0, 4);
 
-const LastestClothes = () => {
-  const { data } = useGetProducts();
-  const firstFour = data?.products.slice(0, 4);
-  return (
+    return (
  <section className="py-20 px-20">
         <div className="container">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h2 className="text-3xl font-bold mb-2">New Drops</h2>
-              <p className="text-muted-foreground">Recents Drops of the Hardest Fits and accessories just for you</p>
+              <h2 className="text-3xl font-bold mb-2">Big Spenders</h2>
+              <p className="text-muted-foreground">The ultimate luxury drops, hardest fits and statement accessories, curated for big spenders like you.</p>
             </div>
             <Button variant="outline">
             <Link to="/search">
@@ -27,7 +29,7 @@ const LastestClothes = () => {
         
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {firstFour?.map((clothes) => (
+            {highestPrices?.map((clothes) => (
               <Card key={clothes._id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
                 <div className="relative">
                   <img
@@ -37,7 +39,7 @@ const LastestClothes = () => {
                     height={300}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">-30%</Badge>
+                  {/* <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">-{clothes.salePrice}%</Badge> */}
                   <Button
                     size="icon"
                     variant="secondary"
@@ -74,4 +76,4 @@ const LastestClothes = () => {
   )
 }
 
-export default LastestClothes
+export default HighestPriceProduct

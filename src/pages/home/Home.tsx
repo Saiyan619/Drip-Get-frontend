@@ -6,6 +6,8 @@ import Header from './components/Header';
 import FeaturedClothes from './components/LatestClothes';
 import ProductCategories from './components/ProductCategories';
 import { useGetProducts } from '@/apiServices/ProductApi';
+import HighestPriceProduct from './components/HighestPriceProduct';
+import LowestProducts from './components/LowestProducts';
     
 
 
@@ -45,6 +47,8 @@ const Home = () => {
       {/* <Button onClick={tokenFunc}>register</Button>  */}
       <Header />
       <FeaturedClothes />
+      <HighestPriceProduct />
+      <LowestProducts />
       {/* <ProductCategories /> */}
     </div>
   )

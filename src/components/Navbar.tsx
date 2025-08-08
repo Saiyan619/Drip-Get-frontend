@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
   Search,
   ShoppingCart,
@@ -13,6 +14,7 @@ import {
   Play,
   Download,
   Heart,
+  Crown,
 } from "lucide-react"
 import { Badge } from './ui/badge';
 import { Button } from './ui/button'
@@ -36,11 +38,13 @@ const Navbar = () => {
               <span className="text-2xl font-bold">Drip Get</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
-            <Link to="/search" className="text-sm font-medium hover:text-primary transition-colors flex gap-1 hover:underline">
-              <Search />
-                Search Products
-              </Link>
-            
+            <Link 
+  to="/search" 
+  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium  border border-gray-200 rounded-lg  hover:border-primary/20 transition-all duration-200 ease-in-out group shadow-sm"
+>
+  <Search className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+  Search Products
+</Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">
@@ -58,11 +62,29 @@ const Navbar = () => {
             </div>
                   {/* <ThemeToggle /> */}
                             <ThemeToggle />
-          <Link to="/userProfile">
-          <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
+
+           <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="hidden sm:flex">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                 <Link to="/userProfile">
+                  <User className="h-5 w-5" />
+                  Profile
           </Link>
+                </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                
+                  <Link to="/admin">
+                <Crown  className="h-5 w-5"  />
+                  Admin</Link>
+                </DropdownMenuItem>
+                {/* <DropdownMenuItem>Sign Out</DropdownMenuItem> */}
+              </DropdownMenuContent>
+            </DropdownMenu>
            
           <Link to="/cart">
            <Button variant="ghost" size="icon" className="relative">

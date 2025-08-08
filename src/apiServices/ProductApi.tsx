@@ -62,13 +62,13 @@ const data = await response.json();
     
   }
 
-  const {data, isPending, error} = useQuery({
+  const {data, isPending:isLoading, error} = useQuery({
     queryKey: ["getSingleProduct", id],
     queryFn: getSingleProduct,
     enabled:!!id
   });
 
-  return{data, isPending, error}
+  return{data, isLoading, error}
 }
 
 

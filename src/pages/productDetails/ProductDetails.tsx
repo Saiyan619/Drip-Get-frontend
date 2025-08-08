@@ -7,12 +7,14 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useGetSingleProduct } from "@/apiServices/ProductApi"
 import { useParams } from "react-router-dom"
-import { useAddToCart } from "@/apiServices/CartServices"
+import { useAddToCart, useGetCart } from "@/apiServices/CartServices"
 
 export default function ProductDetails() {
   const { id } = useParams();
-  const { data: singleProduct, isPending, error } = useGetSingleProduct(id);
-  const { addToCart } = useAddToCart();
+  const { data: singleProduct, isLoading, error } = useGetSingleProduct(id);
+  const { addCart, isPending } = useAddToCart();
+    const { refetch } = useGetCart();
+  
   
   // ALL HOOKS MUST BE AT THE TOP - BEFORE ANY EARLY RETURNS!
   const [selectedImage, setSelectedImage] = useState(0)
@@ -20,9 +22,22 @@ export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState('')
   const [quantity, setQuantity] = useState(1)
 
-  
+    const handleAddToCart = async () => {
+    try {
+      await addCart({
+        productId: product._id,
+        size: selectedSize,
+        color: selectedColor,
+        quantity,
+      });
+      await refetch();
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+    }
+  };
+
   useEffect(() => {
-    console.log(singleProduct)
+    singleProduct
   }, [singleProduct, isPending, error])
   
   // Update selected size/color when product loads
@@ -41,7 +56,7 @@ export default function ProductDetails() {
   }, [singleProduct, selectedSize, selectedColor])
 
   // NOW you can do early returns
-  if (isPending) {
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center min-h-96">
@@ -114,7 +129,6 @@ export default function ProductDetails() {
     selectedColor,
     quantity
   };
-  console.log(cartReq)
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -269,21 +283,13 @@ export default function ProductDetails() {
           </div>
 
           {/* Add to Cart and Wishlist buttons */}
-          <div className="space-y-4">
+          {!isInStock ?
+          (   <div className="space-y-4">
            <Button 
   size="lg" 
   className="w-full"
   disabled={!isInStock}
-              onClick={() => {
-    console.log(selectedSize, selectedColor)
-    if (!product._id) return;
-    addToCart({
-      productId: product?._id,
-      size: selectedSize,
-      color: selectedColor,
-      quantity: quantity,
-    });
-  }}
+            
 >
   <ShoppingBag className="mr-2 h-5 w-5" />
   {isInStock 
@@ -296,7 +302,21 @@ export default function ProductDetails() {
               <Heart className="mr-2 h-4 w-4" />
               Add to Wishlist
             </Button>
-          </div>
+            </div>):
+          (
+          <Button   onClick={handleAddToCart} size="lg" 
+  className="w-full" >     {
+  isPending ? (
+    <div className="flex items-center gap-2">
+      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      <span>Adding</span>
+    </div>
+  ) : (
+    "Add to Cart"
+  )
+}</Button>
+          )}
+       
 
           <Separator />
 

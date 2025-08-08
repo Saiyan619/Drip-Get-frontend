@@ -71,10 +71,10 @@ const UpdateOrder = ({ id, initialStatus }: updateOrderProps) => {
                 <SelectGroup>
                   <SelectLabel>Order Status</SelectLabel>
                   <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="processing">Processing</SelectItem>
+                  <SelectItem value="processing">Paid</SelectItem>
                   <SelectItem value="shipped">Shipped</SelectItem>
                   <SelectItem value="delivered">Delivered</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  {/* <SelectItem value="cancelled">Cancelled</SelectItem> */}
                 </SelectGroup>
               </SelectContent>
             </Select>

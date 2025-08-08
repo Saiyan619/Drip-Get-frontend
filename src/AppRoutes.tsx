@@ -23,15 +23,15 @@ const AppRoutes = () => {
             <Route path='/search' element={<SearchPage />} />
             <Route path='/product/:id' element={<ProductDetails />} />
             <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
-            <Route path='/create-order' element={<CreateOrder />} />
-            <Route path='/create-order/verify-order/:id' element={<VerifyOrder />} />
-            <Route path='/payment-success' element={<PaymentSuccessPage />} />
-            
+            <Route path='/create-order' element={<ProtectedRoute><CreateOrder /></ProtectedRoute>} />
+            <Route path='/create-order/verify-order/:id' element={<ProtectedRoute><VerifyOrder /></ProtectedRoute>} />
+            <Route path='/payment-success' element={<ProtectedRoute><PaymentSuccessPage /></ProtectedRoute>} />
+                        <Route path='/userProfile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+
                 <Route path='/admin' element={
                     <ProtectedAdminRoutes>
                     <AdminDashboard />
                     </ProtectedAdminRoutes> } />
-            <Route path='/userProfile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         </Routes>
   )
 }

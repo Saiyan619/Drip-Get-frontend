@@ -1,3 +1,4 @@
+import React from 'react'
 import { useGetProducts } from '@/apiServices/ProductApi'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -5,17 +6,21 @@ import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowRight, Heart, ShoppingCart, Star } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-
-const LastestClothes = () => {
-  const { data } = useGetProducts();
-  const firstFour = data?.products.slice(0, 4);
+const LowestProducts = () => {
+      const { data } = useGetProducts();
+        const lowestPrices = [...data?.products || []]// spread to avoid mutating original
+      .sort((a, b) => a.price - b.price) // highest first
+      .slice(0, 4);
+    
   return (
  <section className="py-20 px-20">
         <div className="container">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h2 className="text-3xl font-bold mb-2">New Drops</h2>
-              <p className="text-muted-foreground">Recents Drops of the Hardest Fits and accessories just for you</p>
+<h2 className="text-3xl font-bold mb-2">Best Bargains</h2>
+<p className="text-muted-foreground">
+Unbeatable steals, stylish essentials all at prices that make your wallet happy.
+</p>
             </div>
             <Button variant="outline">
             <Link to="/search">
@@ -27,7 +32,7 @@ const LastestClothes = () => {
         
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {firstFour?.map((clothes) => (
+            {lowestPrices?.map((clothes) => (
               <Card key={clothes._id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
                 <div className="relative">
                   <img
@@ -74,4 +79,4 @@ const LastestClothes = () => {
   )
 }
 
-export default LastestClothes
+export default LowestProducts
