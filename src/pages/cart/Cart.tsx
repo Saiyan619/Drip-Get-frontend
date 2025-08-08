@@ -13,7 +13,7 @@ const Cart = () => {
   const { data: cart, refetch } = useGetCart();
   const { deleteUserCart, isPending } = useDeleteCart();
   // Add state to track which item is being deleted
-  const [deletingItemId, setDeletingItemId] = useState(null);
+  const [deletingItemId, setDeletingItemId] = useState<string|null>(null);
   
   const myCart = cart
 
@@ -21,7 +21,7 @@ const Cart = () => {
     console.log(myCart?.items);
   }
   
-  const handleRemove = async (itemId) => {
+  const handleRemove = async (itemId:string) => {
     try {
       setDeletingItemId(itemId); // Set which item is being deleted
       await deleteUserCart(itemId);

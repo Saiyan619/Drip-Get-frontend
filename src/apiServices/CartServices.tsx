@@ -1,4 +1,4 @@
-import { Cart, CartItem, CartItemInput } from "@/types";
+import { Cart, CartItem, CartItemInput, UpdateCartItemInput } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -80,7 +80,7 @@ export const useUpdateCartItem = () => {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
   
-  const updateCartItem = async (cartParam: CartItemInput) => {
+  const updateCartItem = async (cartParam: UpdateCartItemInput) => {
     const token = await getToken();
 
     const response = await fetch(`${API_BASE_URL}/api/cart/add/${cartParam._id}`, {

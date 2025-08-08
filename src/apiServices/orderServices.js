@@ -1,9 +1,7 @@
-import { Order, OrderDataInput, OrderList } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 export const useGetAllOrders = () => {
     const { getToken } = useAuth();
     const getAllOrders = async () => {
@@ -20,14 +18,13 @@ export const useGetAllOrders = () => {
         }
         const data = await response.json();
         return data;
-    }
+    };
     const { data: allOrders, isPending, error, refetch } = useQuery({
         queryKey: ["getAllOrders"],
         queryFn: getAllOrders,
-    })
+    });
     return { allOrders, refetch };
 };
-
 export const useGetMyOrders = () => {
     const { getToken } = useAuth();
     const getMyOrders = async () => {
@@ -44,48 +41,41 @@ export const useGetMyOrders = () => {
         }
         const data = await response.json();
         return data;
-
-    }
-    const { data: myOrders, isPending, error, refetch } = useQuery<OrderList>({
+    };
+    const { data: myOrders, isPending, error, refetch } = useQuery({
         queryKey: ["getMyOrders"],
         queryFn: getMyOrders
     });
     return { myOrders, isPending, error, refetch };
-}
-
-
-export const useGetOrderById = (orderId: string) => {
-            const { getToken } = useAuth();
-const getOrderById = async (orderId: string) => {
-            const token = await getToken();
-    const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}`, {
-        method: "GET",
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
+};
+export const useGetOrderById = (orderId) => {
+    const { getToken } = useAuth();
+    const getOrderById = async (orderId) => {
+        const token = await getToken();
+        const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        if (!response.ok) {
+            throw new Error("Something went wrong while fetching the order");
         }
-
-    });
-    if (!response.ok) {
-        throw new Error("Something went wrong while fetching the order");
-    }
-    const data = await response.json();
-    console.log(data);
-    return data;
-    }
-    const { data: singleOrder, isPending, error } = useQuery<Order>({
-        queryKey: ["getOrderById", orderId], 
-        queryFn: () => getOrderById(orderId), 
+        const data = await response.json();
+        console.log(data);
+        return data;
+    };
+    const { data: singleOrder, isPending, error } = useQuery({
+        queryKey: ["getOrderById", orderId],
+        queryFn: () => getOrderById(orderId),
         enabled: !!orderId // Only run query if orderId exists
     });
-    return { singleOrder, isPending, error}
-}
-
-
- export const useCreateOrder = () => {
-        const { getToken } = useAuth();
-
-    const createOrder = async (orderData: OrderDataInput) => {
+    return { singleOrder, isPending, error };
+};
+export const useCreateOrder = () => {
+    const { getToken } = useAuth();
+    const createOrder = async (orderData) => {
         const token = await getToken();
         const response = await fetch(`${API_BASE_URL}/api/orders/create`, {
             method: "POST",
@@ -95,35 +85,27 @@ const getOrderById = async (orderId: string) => {
             },
             body: JSON.stringify(orderData)
         });
-
         if (!response.ok) {
             throw new Error("Something went wrong while creating the order");
         }
         const data = await response.json();
         console.log("Order created successfully:", data);
         return data;
-
-
     };
-     const { mutateAsync: createNewOrder, isPending } = useMutation(
-         {
-             mutationFn: createOrder,
-             onSuccess: () => {
-                 toast.success("Order Placed successfully")
-             },
-             onError: () => {
-                 toast.error("Error.Something went wrong!")
-             }
-          })
-    return{createNewOrder, isPending}
-}
-type UpdateOrderProps = {
-    id: string;
-    status: string;
-}
+    const { mutateAsync: createNewOrder, isPending } = useMutation({
+        mutationFn: createOrder,
+        onSuccess: () => {
+            toast.success("Order Placed successfully");
+        },
+        onError: () => {
+            toast.error("Error.Something went wrong!");
+        }
+    });
+    return { createNewOrder, isPending };
+};
 export const useUpdateOrder = () => {
     const { getToken } = useAuth();
-    const updateOrder = async ({id, status}:UpdateOrderProps) => {
+    const updateOrder = async ({ id, status }) => {
         const token = await getToken();
         const response = await fetch(`${API_BASE_URL}/api/orders/admin/orders/${id}/status`, {
             method: "PUT",
@@ -131,23 +113,23 @@ export const useUpdateOrder = () => {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ status }), 
-        })
+            body: JSON.stringify({ status }),
+        });
         if (!response.ok) {
             throw new Error("Cant update order");
         }
-        const data = await response.json()
-        console.log(data)
-        return data
-    }
-    const { mutateAsync:updateUserOrder, isPending } = useMutation({
+        const data = await response.json();
+        console.log(data);
+        return data;
+    };
+    const { mutateAsync: updateUserOrder, isPending } = useMutation({
         mutationFn: updateOrder,
         onSuccess: () => {
-            toast.success("Order Updated successfully!")
+            toast.success("Order Updated successfully!");
         },
         onError: () => {
-            toast.error("Order Failed: Something went wrong")
+            toast.error("Order Failed: Something went wrong");
         }
-    })
-    return {updateUserOrder, isPending}
-}
+    });
+    return { updateUserOrder, isPending };
+};

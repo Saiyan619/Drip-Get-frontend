@@ -152,7 +152,14 @@ export interface FilterParams {
 // }
 
 export interface CartItemInput {
-  _id: string;
+  productId: string;
+  size: string;
+  color: string;
+  quantity: number;
+}
+
+export interface UpdateCartItemInput {
+  _id: string
   productId: string;
   size: string;
   color: string;
@@ -219,6 +226,10 @@ export interface Order {
   stripePaymentId: string | null; // nullable
   createdAt: string;
   updatedAt: string;
+}
+
+export interface OrderList {
+  orders: Order[];
 }
 
 // Response from backend when an order is created
