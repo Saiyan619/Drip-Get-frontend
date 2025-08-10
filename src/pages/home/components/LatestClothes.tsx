@@ -5,72 +5,136 @@ import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowRight, Heart, ShoppingCart, Star } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-
 const LastestClothes = () => {
   const { data } = useGetProducts();
   const firstFour = data?.products.slice(0, 4);
+  
   return (
- <section className="py-20 px-20">
-        <div className="container">
-          <div className="flex items-center justify-between mb-12">
-            <div>
-              <h2 className="text-3xl font-bold mb-2">New Drops</h2>
-              <p className="text-muted-foreground">Recents Drops of the Hardest Fits and accessories just for you</p>
-            </div>
-            <Button variant="outline">
+    <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 lg:px-20">
+      <div className="container">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 mb-8 sm:mb-12">
+          <div className="text-center sm:text-left">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">New Drops</h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-md sm:max-w-none mx-auto sm:mx-0">
+              Recent Drops of the Hardest Fits and accessories just for you
+            </p>
+          </div>
+          
+          <Button 
+            variant="outline" 
+            className="w-full sm:w-auto flex items-center justify-center gap-2"
+            asChild
+          >
             <Link to="/search">
-                            View All Products
+              <span className="hidden sm:inline">View All Products</span>
+              <span className="sm:hidden">View All</span>
+              <ArrowRight className="h-4 w-4" />
             </Link>
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+          </Button>
         </div>
-        
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {firstFour?.map((clothes) => (
-              <Card key={clothes._id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
-                <div className="relative">
-                  <img
-                    src={clothes.images[0]}
-                    alt={clothes.name}
-                    width={400}
-                    height={300}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">-30%</Badge>
-                  <Button
-                    size="icon"
-                    variant="secondary"
-                    className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Heart className="h-4 w-4" />
+       
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          {firstFour?.map((clothes) => (
+            <Card 
+              key={clothes._id} 
+              className="group hover:shadow-lg transition-all duration-300 overflow-hidden bg-card"
+            >
+              {/* Image Container */}
+              <div className="relative overflow-hidden">
+                <img
+                  src={clothes.images[0]}
+                  alt={clothes.name}
+                  className="w-full h-40 sm:h-48 md:h-52 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                
+                {/* Badges and Actions */}
+                <Badge className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-red-500 hover:bg-red-600 text-xs">
+                  -30%
+                </Badge>
+                
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="absolute top-2 sm:top-3 right-2 sm:right-3 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 sm:h-10 sm:w-10"
+                >
+                  <Heart className="h-3 w-3 sm:h-4 sm:w-4" />
+                </Button>
+              </div>
+              
+              {/* Card Content */}
+              <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6 pt-3 sm:pt-6">
+                <div className="flex items-center justify-between mb-2">
+                  <Badge variant="secondary" className="text-xs">
+                    {clothes.category}
+                  </Badge>
+                </div>
+                <CardTitle className="line-clamp-2 text-sm sm:text-base leading-tight">
+                  {clothes.name}
+                </CardTitle>
+              </CardHeader>
+              
+              {/* Card Footer */}
+              <CardFooter className="pt-0 px-3 sm:px-6 pb-3 sm:pb-6">
+                <div className="flex items-end justify-between w-full">
+                  {/* Price Section */}
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg sm:text-xl lg:text-2xl font-bold">
+                        ${clothes.salePrice}
+                      </span>
+                      <span className="text-xs sm:text-sm text-muted-foreground line-through">
+                        ${clothes.price}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Action Button */}
+                  <Button size="sm" className="text-xs sm:text-sm px-3 sm:px-4" asChild>
+                    <Link to={`/product/${clothes._id}`}>
+                      <span className="hidden sm:inline">See more</span>
+                      <span className="sm:hidden">View</span>
+                    </Link>
                   </Button>
                 </div>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <Badge variant="secondary">{clothes.category}</Badge>
-                  </div>
-                  <CardTitle className="line-clamp-1">{clothes.name}</CardTitle>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+        
+        {/* Mobile View All Button (Alternative placement) */}
+        {/* <div className="flex justify-center mt-8 sm:hidden">
+          <Button className="w-full max-w-xs" asChild>
+            <Link to="/search">
+              View All Products
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div> */}
+        
+        {/* Loading State */}
+        {!data && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Card key={index} className="overflow-hidden">
+                <div className="w-full h-40 sm:h-48 md:h-52 bg-muted animate-pulse" />
+                <CardHeader className="pb-2 sm:pb-3">
+                  <div className="h-4 bg-muted rounded animate-pulse mb-2" />
+                  <div className="h-5 bg-muted rounded animate-pulse" />
                 </CardHeader>
                 <CardFooter className="pt-0">
-                  <div className="flex items-start justify-between w-full flex-col">
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl font-bold">${clothes.salePrice}</span>
-                      <span className="text-sm text-muted-foreground line-through">${clothes.price}</span>
-                    </div>
-                    <Link to={`/product/${clothes._id}`}>
-                           <Button size="sm">
-                      See more
-                    </Button>
-                    </Link>
-             
+                  <div className="flex justify-between w-full">
+                    <div className="h-6 w-20 bg-muted rounded animate-pulse" />
+                    <div className="h-8 w-16 bg-muted rounded animate-pulse" />
                   </div>
                 </CardFooter>
               </Card>
             ))}
           </div>
-        </div>
-      </section>
+        )}
+      </div>
+    </section>
   )
 }
 

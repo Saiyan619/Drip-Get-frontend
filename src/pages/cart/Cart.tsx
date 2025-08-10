@@ -50,7 +50,7 @@ const Cart = () => {
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full animate-ping"></div>
                 </div>
       
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-gray-900">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
                     Your cart is currently empty
                 </h1>
                 <p className="text-base sm:text-lg text-gray-600 mb-6 max-w-2xl mx-auto leading-relaxed">
