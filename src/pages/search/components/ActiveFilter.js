@@ -1,6 +1,0 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
-export const ActiveFilters = ({ filters, onRemoveFilter, onRemoveSearch }) => {
-    return (_jsxs("div", { className: "mb-4 flex flex-wrap gap-2", children: [filters.search && (_jsxs(Badge, { variant: "secondary", className: "flex items-center gap-1", children: ["Search: ", filters.search, _jsx(X, { className: "h-3 w-3 cursor-pointer", onClick: onRemoveSearch })] })), filters.category && (_jsxs(Badge, { variant: "secondary", className: "flex items-center gap-1", children: ["Category: ", filters.category, _jsx(X, { className: "h-3 w-3 cursor-pointer", onClick: () => onRemoveFilter('category') })] })), filters.minPrice && (_jsxs(Badge, { variant: "secondary", className: "flex items-center gap-1", children: ["Min: $", filters.minPrice, _jsx(X, { className: "h-3 w-3 cursor-pointer", onClick: () => onRemoveFilter('minPrice') })] })), filters.maxPrice && (_jsxs(Badge, { variant: "secondary", className: "flex items-center gap-1", children: ["Max: $", filters.maxPrice, _jsx(X, { className: "h-3 w-3 cursor-pointer", onClick: () => onRemoveFilter('maxPrice') })] }))] }));
-};
