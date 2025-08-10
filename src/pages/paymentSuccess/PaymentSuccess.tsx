@@ -36,6 +36,7 @@ export default function PaymentSuccessPage() {
         </div>
 
 
+        
         {/* Trust Badges */}
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           <div className="flex flex-col items-center">
