@@ -16,6 +16,7 @@ type DeleteProp = {
   id: string;
 }
 
+
 const DeleteProduct = ({ id }: DeleteProp) => {
   const { deleteProduct } = useDeleteProducts();
   const [open, setOpen] = useState(false);
