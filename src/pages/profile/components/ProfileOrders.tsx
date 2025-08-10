@@ -30,7 +30,7 @@ const ProfileOrders = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {myOrders?.orders.map((order) => (
+                  {myOrders?.orders?.map((order) => (
                     <div key={order._id} className="border rounded-lg p-4">
                       <div className="flex items-center justify-between mb-4">
                         <div>
