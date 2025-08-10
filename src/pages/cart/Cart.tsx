@@ -5,7 +5,6 @@ import { Item } from '@radix-ui/react-select';
 import { CheckCircle, Clock, Heart, Minus, Plus, Trash2, Truck } from 'lucide-react';
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
-import { number } from 'yargs';
 import UpdateCartDialog from './components/UpdateCartDialog';
 import CartSummary from './components/CartSummary';
 

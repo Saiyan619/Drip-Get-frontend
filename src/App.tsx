@@ -8,6 +8,7 @@ import { ThemeProvider } from './components/theme-provider';
 import { ThemeToggle } from './components/theme-toggle';
 import { Toaster } from './components/ui/sonner';
 
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
