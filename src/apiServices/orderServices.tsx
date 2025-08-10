@@ -46,7 +46,7 @@ export const useGetMyOrders = () => {
         return data;
 
     }
-    const { data: myOrders, isPending, error, refetch } = useQuery<OrderList>({
+    const { data: myOrders, isPending, error, refetch } = useQuery<Order[]>({
         queryKey: ["getMyOrders"],
         queryFn: getMyOrders
     });
