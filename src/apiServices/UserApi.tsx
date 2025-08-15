@@ -2,7 +2,10 @@ import { AllUserResponse, UserInput } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+// const API_BASE_URL = 'http://10.31.144.15:5000';
+
 
 type createUserInput = {
   clerkId: string;
