@@ -3,10 +3,8 @@ import { ApiResponse, CreateProductInput, FilterParams, isExistingImage, isNewIm
 import { useAuth } from "@clerk/clerk-react";
 import { toast } from "sonner";
 
-// const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-const API_BASE_URL = import.meta.env.VITE_API_URL 
-// const API_BASE_URL = 'http://10.31.144.15:5000';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export const useGetProducts = (filters: FilterParams = {}) => {
   const getProducts = async (): Promise<ApiResponse> => {
