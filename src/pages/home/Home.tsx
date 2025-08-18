@@ -43,7 +43,6 @@ const Home = () => {
   return (
     <div>
       {/* 
-      <Button onClick={createMyUser}>register</Button> */}
       {/* <Button onClick={tokenFunc}>register</Button>  */}
       <Header />
       <FeaturedClothes />
